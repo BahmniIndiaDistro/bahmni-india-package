@@ -3,7 +3,7 @@ set -xe
 
 #Working directory : default-config
 cd default-config && scripts/package.sh && cd ..
-cp default-config/target/default_config.zip bahmni-package/bahmni-web/resources/
+cp default-config/target/default_config.zip bahmni-india-package/bahmni-web/resources/
 
 cd bahmni-india-package/bahmni-web
 rm -rf build/
