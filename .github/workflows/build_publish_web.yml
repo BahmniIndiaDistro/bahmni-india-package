@@ -19,9 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Download default_config.zip
-        run: sh .github/download_artifact.sh default-config DefaultConfig ${{secrets.BAHMNI_PAT}} bahmni-web
+        run: sh .github/download_artifact.sh default-config DefaultConfig ${{secrets.BAHMNI_INDIADISTRO_PAT}} bahmni-web
       - name: Download ndhm-react.zip
-        run: sh .github/download_artifact.sh ndhm-react NDHMReact ${{secrets.BAHMNI_PAT}} bahmni-web
+        run: sh .github/download_artifact.sh ndhm-react NDHMReact ${{secrets.BAHMNI_INDIADISTRO_PAT}} bahmni-web
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:

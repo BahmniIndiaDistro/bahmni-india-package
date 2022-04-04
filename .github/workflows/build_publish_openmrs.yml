@@ -18,9 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Download default_config.zip
-        run: sh .github/download_artifact.sh default-config DefaultConfig ${{secrets.BAHMNI_PAT}} bahmni-emr
+        run: sh .github/download_artifact.sh default-config DefaultConfig ${{secrets.BAHMNI_INDIADISTRO_PAT}} bahmni-emr
       - name: Download hip module omod
-        run: sh .github/download_artifact.sh openmrs-module-hip Package ${{secrets.BAHMNI_PAT}} bahmni-emr
+        run: sh .github/download_artifact.sh openmrs-module-hip Package ${{secrets.BAHMNI_INDIADISTRO_PAT}} bahmni-emr
       - name: Download fhir2 omod
         run: wget -q https://github.com/BahmniIndiaDistro/ndhm-react/releases/download/Release_v1/fhir2-omod-1.0.0-SNAPSHOT.omod -P bahmni-emr/resources/
       - name: Login to DockerHub
