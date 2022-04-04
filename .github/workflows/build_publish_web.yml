@@ -31,6 +31,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: package/docker/Dockerfile
+          file: bahmni-web/docker/Dockerfile
           push: true
-          tags: bahmni/bahmni-web:${{env.BAHMNI_VERSION}}-${{github.run_number}},bahmni/bahmni-web:0.94-ndhm-1
+          tags: bahmniindiadistro/bahmni-web-abdm:${{env.BAHMNI_VERSION}}-${{github.run_number}},bahmniindiadistro/bahmni-web-abdm

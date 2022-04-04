@@ -1,7 +1,7 @@
 name: Build and Publish OpenMRS
 on:
   push:
-    branches: [master]
+    branches: [master, BAH-1439]
     paths:
       - "bahmni-emr/docker/Dockerfile"
       - ".github/workflows/build_publish_openmrs.yml"
@@ -32,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: package/docker/openmrs/Dockerfile
+          file: bahmni-emr/docker/Dockerfile
           push: true
-          tags: bahmni/openmrs:${{env.BAHMNI_VERSION}}-${{github.run_number}},bahmni/openmrs:0.94-ndhm-1
+          tags: bahmniindiadistro/bahmni-openmrs-abdm:${{env.BAHMNI_VERSION}}-${{github.run_number}},bahmniindiadistro/bahmni-openmrs-abdm
 

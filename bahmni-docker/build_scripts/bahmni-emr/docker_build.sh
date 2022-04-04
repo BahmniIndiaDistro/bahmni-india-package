@@ -8,8 +8,8 @@ set -xe
 cd default-config && scripts/package.sh && cd ..
 cp default-config/target/default_config.zip bahmni-india-package/bahmni-emr/resources/
 
-cd bahmni-india-package/bahmni-emr
+cd bahmni-india-package
 
 # Building Docker images
 OPENMRS_IMAGE_TAG=${BAHMNI_VERSION}-${GITHUB_RUN_NUMBER}
-docker build -t bahmni/openmrs:${OPENMRS_IMAGE_TAG} -f docker/Dockerfile  . --no-cache
+docker build -t bahmniindiadistro/bahmni-openmrs-abdm:${OPENMRS_IMAGE_TAG} -f bahmni-emr/docker/Dockerfile  . --no-cache
