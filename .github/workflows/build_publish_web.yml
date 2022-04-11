@@ -1,7 +1,7 @@
 name: Build and Publish Bahmni-Web
 on:
   push:
-    branches: [master,BAH-1439]
+    branches: [master]
     paths:
       - ".github/workflows/build_publish_web.yml"
       - "bahmni-web/docker/Dockerfile"

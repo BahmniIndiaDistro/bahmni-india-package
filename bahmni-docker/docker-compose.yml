@@ -178,14 +178,14 @@ services:
         whitelisted:numbers: ""
 
   hiu-db-setup:
-      image: bahmnicovid19/hiu-db-initializer
+      image: projecteka/hiu-db-initializer
       container_name: hiu-db-setup
       environment:
         - 'JAVA_TOOL_OPTIONS=-Djdbc.url=jdbc:postgresql://db:5432/health_information_user -Djdbc.username=postgres -Djdbc.password=welcome'
 
   hip:
     container_name: hip
-    image: "bahmnicovid19/health-information-provider"
+    image: bahmniindiadistro/hip
     ports:
       - "8000:80"
     depends_on:
@@ -209,7 +209,7 @@ services:
       Bahmni:Id: ${HIP_ID:?}
 
   hiu:
-    image: "bahmnicovid19/health-information-user:latest"
+    image: bahmniindiadistro/hiu
     container_name: hiu
     volumes:
       - ./:/shared
@@ -250,7 +250,7 @@ services:
       - "9053:8003"
 
   hiu-ui:
-    image: "bahmnicovid19/hiu-ui:latest"
+    image: bahmniindiadistro/hiu-ui
     container_name: hiu-ui
     environment:
       BACKEND_BASE_URL: http://hiu:8080
