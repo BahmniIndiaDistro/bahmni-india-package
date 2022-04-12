@@ -2,6 +2,9 @@ version: "3.7"
 services:
   proxy:
     image: "bahmniindiadistro/bahmni-proxy-abdm:${PROXY_IMAGE_TAG:?}"
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+      EMAIL: ${EMAIL}
     volumes: 
     #   - ${CERTIFICATE_PATH}:/etc/tls
     - "bahmni-patient-images:/home/bahmni/patient_images"
