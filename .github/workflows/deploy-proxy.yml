@@ -18,14 +18,8 @@ jobs:
         run: |
           sudo ssh -T -o "StrictHostKeyChecking no" -i "ABDM-docker.pem" ec2-user@ec2-15-206-93-89.ap-south-1.compute.amazonaws.com <<EOF
             cd bahmni
-            docker stop bahmni-web
-            docker stop openmrs
             docker stop proxy
-            docker pull bahmniindiadistro/bahmni-web-abdm
-            docker pull bahmniindiadistro/bahmni-openmrs-abdm
             docker pull bahmniindiadistro/bahmni-proxy-abdm
-            docker compose up -d openmrs
-            docker compose up -d bahmni-web
             docker compose up -d proxy
             git pull
           EOF
