@@ -1,0 +1,41 @@
+name: bahmni-india-package EMR deploy
+on:
+  push:
+    branches: [main]
+    paths:
+      - "bahmni-proxy/**"
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: extract private key
+        run: 'echo "$SSH_KEY" > ABDM-docker.pem'
+        shell: bash
+        env:
+          SSH_KEY: ${{secrets.ABDM_DOCKER_PEM}}
+      - name: deploy Bahmni india package
+        run: |
+          sudo ssh -T -o "StrictHostKeyChecking no" -i "ABDM-docker.pem" ec2-user@ec2-15-206-93-89.ap-south-1.compute.amazonaws.com <<EOF
+            cd bahmni
+            docker stop bahmni-web
+            docker stop openmrs
+            docker stop proxy
+            docker pull bahmniindiadistro/bahmni-web-abdm
+            docker pull bahmniindiadistro/bahmni-openmrs-abdm
+            docker pull bahmniindiadistro/bahmni-proxy-abdm
+            docker compose up -d openmrs
+            docker compose up -d bahmni-web
+            docker compose up -d proxy
+            git pull
+          EOF
+  notification:
+    name: notification
+    needs:
+      - deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy notification
+        if: ${{ needs.deploy.result == 'success' }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":":white_check_mark:  New Bahmni proxy docker Images deployed on https://abdm.bahmni-covid19.in/"}' ${{ secrets.SLACK_WEBHOOK_URL }}
