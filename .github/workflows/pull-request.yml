@@ -1,7 +1,9 @@
 name: bahmni-india-package PR
 on:
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+      - BAH-*
     types: [opened, synchronize, reopened]
 jobs:
   notify:

@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "bahmni-proxy/**"
+      - "bahmni-emr/**"
 jobs:
   deploy:
     name: Deploy
