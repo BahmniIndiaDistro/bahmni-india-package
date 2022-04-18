@@ -6,7 +6,7 @@ This directory contains
 
 Running the build script builds bahmniindiadistro/bahmni-emr-abdm image
 
-##To build image using scripts
+## To build image using scripts
 
 Prerequisite
 - default-config and bahmni-india-package should be under same directory. because, it will get the default-config.zip from default-config locally
@@ -14,7 +14,7 @@ Prerequisite
 cd ..
 bahmni-india-package/bahmni-emr/scripts/docker_build.sh 
 ```
-##To build image directly using dockerfile
+## To build image directly using dockerfile
 
 To get the zip file, run the following command
 ```

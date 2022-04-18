@@ -6,12 +6,12 @@ This directory contains
 
 Running the build script builds bahmniindiadistro/bahmni-proxy-abdm image
 
-##To build image using scripts
+## To build image using scripts
 ```
 cd ..
 bahmni-india-package/bahmni-proxy/scripts/docker_build.sh 
 ```
-##To build image directly using dockerfile
+## To build image directly using dockerfile
 
 To build a docker image
 ```
