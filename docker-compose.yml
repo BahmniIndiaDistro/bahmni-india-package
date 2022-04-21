@@ -77,7 +77,7 @@ services:
       ports:
         - "5672:5672"
   otp:
-      image: "ganesan92/otp-service"
+      image: "bahmniindiadistro/otp-service"
       container_name: otp
       depends_on:
         - db
