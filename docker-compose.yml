@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   proxy:
-    image: "bahmniindiadistro/bahmni-proxy-abdm:${PROXY_IMAGE_TAG:?}"
+    image: bahmniindiadistro/bahmni-proxy-abdm:${PROXY_IMAGE_TAG:?}
     volumes: 
     #   - ${CERTIFICATE_PATH}:/etc/tls
     - "bahmni-patient-images:/home/bahmni/patient_images"
@@ -62,22 +62,22 @@ services:
 
   db:
     container_name: db
-    image: "postgres:latest"
+    image: postgres:${POSTGRES_IMAGE_TAG:?}
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=welcome
+      - POSTGRES_USER=${POSTGRES_USER:?}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?}
     ports:
       - "5433:5432"
     volumes:
       - postgresql:/var/lib/postgresql
       - postgresql_data:/var/lib/postgresql/data
   rabbitmq:
-      image: "rabbitmq:3"
+      image: rabbitmq:${RABBITMQ_IMAGE_TAG:?}
       container_name: rabbitmq
       ports:
         - "5672:5672"
   otp:
-      image: "bahmniindiadistro/otp-service"
+      image: bahmniindiadistro/otp-service:${OTP_SERVICE_IMAGE_TAG:?}
       container_name: otp
       depends_on:
         - db
@@ -85,14 +85,14 @@ services:
         whitelisted:numbers: ""
 
   hiu-db-setup:
-      image: projecteka/hiu-db-initializer
+      image: projecteka/hiu-db-initializer:${HIU_DB_INITIALIZER_IMAGE_TAG:?}
       container_name: hiu-db-setup
       environment:
-        - 'JAVA_TOOL_OPTIONS=-Djdbc.url=jdbc:postgresql://db:5432/health_information_user -Djdbc.username=postgres -Djdbc.password=welcome'
+        - 'JAVA_TOOL_OPTIONS=-Djdbc.url=${POSTGRES_URL:?} -Djdbc.username=${POSTGRES_USER:?} -Djdbc.password=${POSTGRES_PASSWORD:?}'
 
   hip:
     container_name: hip
-    image: bahmniindiadistro/hip
+    image: bahmniindiadistro/hip:${HIP_IMAGE_TAG:?}
     ports:
       - "8000:80"
     depends_on:
@@ -108,15 +108,15 @@ services:
       OpenMrs:url: ${OPENMRS_URL:?}
       OpenMrs:password: ${OPENMRS_PASSWORD:?}
       Gateway:cmSuffix: ${CONSENT_MANAGEMENT_SUFFIX:?}
-      OtpService:BaseUrl: http://otp
-      hip:url: http://hip:8000
-      HEALTH_CHECK_DURATION: 30000
+      OtpService:BaseUrl: ${OTP_SERVICE_URL:?}
+      hip:url: ${HIP_URL:?}
+      HEALTH_CHECK_DURATION: ${HEALTH_CHECK_DURATION:?}
       Cors:allowedOrigins: ${CORS_ALLOWED_ORIGIN:?}
       Hip-Service:Url: ${HIP_URL:?}
       Bahmni:Id: ${HIP_ID:?}
 
   hiu:
-    image: bahmniindiadistro/hiu
+    image: bahmniindiadistro/hiu:${HIU_IMAGE_TAG:?}
     container_name: hiu
     volumes:
       - ./:/shared
@@ -128,40 +128,40 @@ services:
       CONSENT_NOTIFICATION_URL: ${CONSENT_NOTIFICATION_URL:?}
       CONSENT_MANAGEMENT_SUFFIX:  ${CONSENT_MANAGEMENT_SUFFIX:?}
       CONSENT_MANAGEMENT_URL: ${CONSENT_MANAGEMENT_URL:?}
-      DEFAULT_PAGE_SIZE: 20
-      MAX_PAGE_SIZE: 100
-      LOCAL_STORAGE_PATH: /tmp/
+      DEFAULT_PAGE_SIZE: ${DEFAULT_PAGE_SIZE:?}
+      MAX_PAGE_SIZE: ${MAX_PAGE_SIZE:?}
+      LOCAL_STORAGE_PATH: ${LOCAL_STORAGE_PATH}
       HIU_CLIENT_ID: ${HIU_CLIENT_ID:?}
       HIU_CLIENT_SECRET: ${HIU_CLIENT_SECRET:?}
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
+      POSTGRES_HOST: ${POSTGRES_HOST:?}
+      POSTGRES_PORT: ${POSTGRES_PORT}
       CONSENT_MANAGER_DB_NAME: health_information_user
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: welcome
-      DB_CONNECTION_POOL_SIZE: 5
-      OFFSET_IN_DAYS: 2
-      USING_GATEWAY: 'true'
+      POSTGRES_USER: ${POSTGRES_USER:?}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      DB_CONNECTION_POOL_SIZE: ${DB_CONNECTION_POOL_SIZE:?}
+      OFFSET_IN_DAYS: ${OFFSET_IN_DAYS:?}
+      USING_GATEWAY: ${USING_GATEWAY:?}
       GATEWAY_BASE_URL: ${GATEWAY_BASE_URL:?}
-      GATEWAY_REQUEST_TIMEOUT: 2000
+      GATEWAY_REQUEST_TIMEOUT: ${GATEWAY_REQUEST_TIMEOUT:?}
       GATEWAY_JWK_URL: ${GATEWAY_JWK_URL:?}
-      HFR_AFFINITY_DOMAINS: facilitysbx.ndhm.gov.in
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
+      HFR_AFFINITY_DOMAINS: ${HFR_AFFINITY_DOMAINS:?}
+      RABBITMQ_HOST: ${RABBITMQ_HOST:?}
+      RABBITMQ_PORT: ${RABBITMQ_PORT:?}
       RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:?}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:?}
-      MAX_IN_MEMORY_SIZE: 500MB
-      DATA_FLOW_CONSENT_REQUEST_WAIT_TIME: 1
-      DATA_FLOW_CONSENT_ARTEFACT_WAIT_TIME: 1
-      DATA_FLOW_PART_WAIT_TIME: 1440
+      MAX_IN_MEMORY_SIZE: ${MAX_IN_MEMORY_SIZE:?}
+      DATA_FLOW_CONSENT_REQUEST_WAIT_TIME: ${DATA_FLOW_CONSENT_REQUEST_WAIT_TIME:?}
+      DATA_FLOW_CONSENT_ARTEFACT_WAIT_TIME: ${DATA_FLOW_CONSENT_ARTEFACT_WAIT_TIME:?}
+      DATA_FLOW_PART_WAIT_TIME: ${DATA_FLOW_PART_WAIT_TIME:?}
     ports:
       - "9053:8003"
 
   hiu-ui:
-    image: bahmniindiadistro/hiu-ui
+    image: bahmniindiadistro/hiu-ui:${HIU_UI_IMAGE_TAG:?}
     container_name: hiu-ui
     environment:
-      BACKEND_BASE_URL: http://hiu:8080
-
+      BACKEND_BASE_URL: ${HIU_BACKEND_BASE_URL:?}
+      BASE_NAME: ${HIU_UI_BASE_NAME:?}
     ports:
       - "5000:5000"
 
