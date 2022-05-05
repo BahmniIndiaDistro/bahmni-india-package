@@ -88,7 +88,7 @@ services:
       image: projecteka/hiu-db-initializer:${HIU_DB_INITIALIZER_IMAGE_TAG:?}
       container_name: hiu-db-setup
       environment:
-        - 'JAVA_TOOL_OPTIONS=-Djdbc.url=${POSTGRES_URL:?} -Djdbc.username=${POSTGRES_USER:?} -Djdbc.password=${POSTGRES_PASSWORD:?}'
+        - 'JAVA_TOOL_OPTIONS=-Djdbc.url=${HIU_DB_URL:?} -Djdbc.username=${POSTGRES_USER:?} -Djdbc.password=${POSTGRES_PASSWORD:?}'
 
   hip:
     container_name: hip
