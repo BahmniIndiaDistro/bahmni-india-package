@@ -88,7 +88,7 @@ services:
       image: projecteka/hiu-db-initializer:${HIU_DB_INITIALIZER_IMAGE_TAG:?}
       container_name: hiu-db-setup
       environment:
-        - 'JAVA_TOOL_OPTIONS=-Djdbc.url=${HIU_DB_URL:?} -Djdbc.username=${POSTGRES_USER:?} -Djdbc.password=${POSTGRES_PASSWORD:?}'
+        - 'JAVA_TOOL_OPTIONS=-Djdbc.url=${HIU_DB_URL:?} -Djdbc.username=${HIU_DB_USER:?} -Djdbc.password=${HIU_DB_PASSWORD:?}'
 
   hip:
     container_name: hip
@@ -133,10 +133,10 @@ services:
       LOCAL_STORAGE_PATH: ${LOCAL_STORAGE_PATH}
       HIU_CLIENT_ID: ${HIU_CLIENT_ID:?}
       HIU_CLIENT_SECRET: ${HIU_CLIENT_SECRET:?}
-      POSTGRES_HOST: ${POSTGRES_HOST:?}
-      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_HOST: ${HIU_DB_HOST:?}
+      POSTGRES_PORT: ${HIU_DB_PORT}
       CONSENT_MANAGER_DB_NAME: health_information_user
-      POSTGRES_USER: ${POSTGRES_USER:?}
+      POSTGRES_USER: ${HIU_DB_USER:?}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
       DB_CONNECTION_POOL_SIZE: ${DB_CONNECTION_POOL_SIZE:?}
       OFFSET_IN_DAYS: ${OFFSET_IN_DAYS:?}
