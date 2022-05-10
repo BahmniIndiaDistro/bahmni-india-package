@@ -1,0 +1,38 @@
+name: Build and Publish OpenMRS
+on:
+  push:
+    branches: [master]
+    paths:
+      - "bahmni-emr/docker/Dockerfile"
+      - ".github/workflows/build_publish_openmrs.yml"
+
+  repository_dispatch:
+    types: ["default-config-trigger","hip-module-trigger"]
+
+env:
+  BAHMNI_VERSION: 0.94
+jobs:
+  docker-build-publish:
+    name: Docker Build & Publish openmrs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download default_config.zip
+        run: sh .github/download_artifact.sh default-config DefaultConfig ${{secrets.BAHMNI_INDIADISTRO_PAT}} bahmni-emr
+      - name: Download hip module omod
+        run: sh .github/download_artifact.sh openmrs-module-hip Package ${{secrets.BAHMNI_INDIADISTRO_PAT}} bahmni-emr
+      - name: Download fhir2 omod
+        run: wget -q https://github.com/BahmniIndiaDistro/ndhm-react/releases/download/Release_v1/fhir2-omod-1.0.0-SNAPSHOT.omod -P bahmni-emr/resources/
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Docker Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: bahmni-emr/docker/Dockerfile
+          push: true
+          tags: bahmniindiadistro/bahmni-openmrs-abdm:${{env.BAHMNI_VERSION}}-${{github.run_number}},bahmniindiadistro/bahmni-openmrs-abdm
+
