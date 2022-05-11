@@ -85,10 +85,10 @@ services:
         whitelisted:numbers: ""
 
   hiu-db-setup:
-      image: projecteka/hiu-db-initializer:${HIU_DB_INITIALIZER_IMAGE_TAG:?}
+      image: bahmniindiadistro/hiu-db:${HIU_DB_INITIALIZER_IMAGE_TAG:?}
       container_name: hiu-db-setup
       environment:
-        - 'JAVA_TOOL_OPTIONS=-Djdbc.url=${HIU_DB_URL:?} -Djdbc.username=${HIU_DB_USER:?} -Djdbc.password=${HIU_DB_PASSWORD:?}'
+        - 'JAVA_TOOL_OPTIONS=-Djdbc.url=${HIU_DB_URL:?} -Djdbc.username=${HIU_DB_USER:?} -Djdbc.password=${HIU_DB_PASSWORD:?} -Djdbc.database=${HIU_DB_NAME:?}'
 
   hip:
     container_name: hip
