@@ -114,6 +114,7 @@ services:
       Cors:allowedOrigins: ${HIP_CORS_ALLOWED_ORIGIN:?}
       Hip-Service:Url: ${HIP_URL:?}
       Bahmni:Id: ${HIP_ID:?}
+      ConnectionStrings:DefaultConnection: Host=${HIP_DB_HOST:?};Port=${HIP_DB_PORT:?};Username=${HIP_DB_USER:?};Password=${HIP_DB_PASSWORD:?};Database=${HIP_DB_NAME:?};
 
   hiu:
     image: bahmniindiadistro/hiu:${HIU_IMAGE_TAG:?}
