@@ -1,0 +1,176 @@
+version: "3.7"
+services:
+  proxy:
+    image: bahmniindiadistro/bahmni-proxy-abdm:${PROXY_IMAGE_TAG:?}
+    volumes: 
+    #   - ${CERTIFICATE_PATH}:/etc/tls
+    - "bahmni-patient-images:/home/bahmni/patient_images"
+    - "bahmni-document-images:/home/bahmni/document_images"
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+  openmrs:
+    profiles: ["default","openmrs"]
+    image: bahmniindiadistro/bahmni-openmrs-abdm:${OPENMRS_IMAGE_TAG:?}
+    environment:
+      DB_DATABASE: ${OPENMRS_DB_NAME:?}
+      DB_HOST: ${OPENMRS_DB_HOST:?}
+      DB_USERNAME: ${OPENMRS_DB_USERNAME:?}
+      DB_PASSWORD: ${OPENMRS_DB_PASSWORD:?}
+      DB_CREATE_TABLES: ${OPENMRS_DB_CREATE_TABLES}
+      DB_AUTO_UPDATE: ${OPENMRS_DB_AUTO_UPDATE}
+      MODULE_WEB_ADMIN: ${OPENMRS_MODULE_WEB_ADMIN}
+      DEBUG: ${OPENMRS_DEBUG}
+      OPENELIS_HOST: ${OPENELIS_HOST:?}
+      OPENELIS_PORT: ${OPENELIS_PORT:?}
+      OPENELIS_ATOMFEED_USER: ${OPENELIS_ATOMFEED_USER:?}
+      OPENELIS_ATOMFEED_PASSWORD: ${OPENELIS_ATOMFEED_PASSWORD:?}
+    ports:
+      - "8080:8080"
+    volumes:
+      #- "openmrs-data:/usr/local/tomcat/.OpenMRS/modules"
+      #- "${BAHMNI_OPENMRS_MODULES_PATH:?}/:/usr/local/tomcat/.OpenMRS/modules/"
+      #- "${BAHMNI_CONFIG_PATH:?}/:/etc/bahmni_config/"
+      - "bahmni-patient-images:/home/bahmni/patient_images"
+      - "bahmni-document-images:/home/bahmni/document_images"
+    depends_on:
+      - openmrsdb
+
+  openmrsdb:
+    image: bahmni/openmrs-db:${OPENMRS_DB_IMAGE_TAG:?}
+    restart: always
+    profiles: ["default","openmrs"]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
+      MYSQL_DATABASE: ${OPENMRS_DB_NAME:?}
+      MYSQL_USER: ${OPENMRS_DB_USERNAME:?}
+      MYSQL_PASSWORD: ${OPENMRS_DB_PASSWORD:?}
+    ports:
+      - "3306:3306"
+    volumes:
+      - "openmrsdbdata:/var/lib/mysql"
+
+  bahmni-web:
+    image: bahmniindiadistro/bahmni-web-abdm:${BAHMNI_WEB_IMAGE_TAG:?}
+    profiles: ["default","openmrs"]
+    #volumes:
+      #- "${BAHMNI_APPS_PATH:?}/ui/app/:/usr/local/apache2/htdocs/bahmni"
+      #- "${BAHMNI_APPS_PATH:?}/ui/node_modules/@bower_components/:/usr/local/apache2/htdocs/bahmni/components"
+      #- "${BAHMNI_CONFIG_PATH:?}/:/usr/local/apache2/htdocs/bahmni_config/"
+
+  db:
+    container_name: db
+    image: postgres:${POSTGRES_IMAGE_TAG:?}
+    environment:
+      - POSTGRES_USER=${HIP_DB_USER:?}
+      - POSTGRES_PASSWORD=${HIP_DB_PASSWORD:?}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql_data:/var/lib/postgresql/data
+  rabbitmq:
+      image: rabbitmq:${RABBITMQ_IMAGE_TAG:?}
+      container_name: rabbitmq
+      ports:
+        - "5672:5672"
+  otp:
+      image: bahmniindiadistro/otp-service:${OTP_SERVICE_IMAGE_TAG:?}
+      container_name: otp
+      depends_on:
+        - db
+      environment:
+        whitelisted:numbers: ""
+
+  hiu-db-setup:
+      image: bahmniindiadistro/hiu-db:${HIU_DB_INITIALIZER_IMAGE_TAG:?}
+      container_name: hiu-db-setup
+      environment:
+        - 'JAVA_TOOL_OPTIONS=-Djdbc.url=${HIU_DB_URL:?} -Djdbc.username=${HIU_DB_USER:?} -Djdbc.password=${HIU_DB_PASSWORD:?} -Djdbc.database=${HIU_DB_NAME:?}'
+
+  hip:
+    container_name: hip
+    image: bahmniindiadistro/hip:${HIP_IMAGE_TAG:?}
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+      - otp
+      - rabbitmq
+    volumes:
+      - ./:/shared
+    environment:
+      Gateway:clientSecret: ${HIP_SECRET:?}
+      Gateway:clientId: ${HIP_CLIENTID:?}
+      Gateway:url: ${ABDM_GATEWAY_URL:?}
+      OpenMrs:url: ${OPENMRS_URL:?}
+      OpenMrs:password: ${OPENMRS_PASSWORD:?}
+      Gateway:cmSuffix: ${ABDM_CONSENT_MANAGEMENT_SUFFIX:?}
+      OtpService:BaseUrl: ${HIP_OTP_SERVICE_URL:?}
+      hip:url: ${HIP_URL:?}
+      HEALTH_CHECK_DURATION: ${HIP_OPENMRS_HEALTH_CHECK_DURATION:?}
+      Cors:allowedOrigins: ${HIP_CORS_ALLOWED_ORIGIN:?}
+      Hip-Service:Url: ${HIP_URL:?}
+      Bahmni:Id: ${HIP_ID:?}
+      ConnectionStrings:DefaultConnection: Host=${HIP_DB_HOST:?};Port=${HIP_DB_PORT:?};Username=${HIP_DB_USER:?};Password=${HIP_DB_PASSWORD:?};Database=${HIP_DB_NAME:?};
+
+  hiu:
+    image: bahmniindiadistro/hiu:${HIU_IMAGE_TAG:?}
+    container_name: hiu
+    volumes:
+      - ./:/shared
+    environment:
+      HIU_ID: ${HIU_ID:?}
+      HIU_NAME: ${HIU_NAME:?}
+      IDENTITY_JWK_URL: ${ABDM_IDENTITY_JWK_URL:?}
+      DATA_PUSH_URL: ${HIU_DATA_PUSH_URL:?}
+      CONSENT_NOTIFICATION_URL: ${ABDM_CONSENT_NOTIFICATION_URL:?}
+      CONSENT_MANAGEMENT_SUFFIX:  ${ABDM_CONSENT_MANAGEMENT_SUFFIX:?}
+      CONSENT_MANAGEMENT_URL: ${ABDM_CONSENT_MANAGEMENT_URL:?}
+      DEFAULT_PAGE_SIZE: ${HIU_DEFAULT_PAGE_SIZE:?}
+      MAX_PAGE_SIZE: ${HIU_MAX_PAGE_SIZE:?}
+      LOCAL_STORAGE_PATH: ${HIU_LOCAL_STORAGE_PATH}
+      HIU_CLIENT_ID: ${HIU_CLIENT_ID:?}
+      HIU_CLIENT_SECRET: ${HIU_CLIENT_SECRET:?}
+      POSTGRES_HOST: ${HIU_DB_HOST:?}
+      POSTGRES_PORT: ${HIU_DB_PORT}
+      CONSENT_MANAGER_DB_NAME: ${HIU_DB_NAME:?}
+      POSTGRES_USER: ${HIU_DB_USER:?}
+      POSTGRES_PASSWORD: ${HIU_DB_PASSWORD:?}
+      DB_CONNECTION_POOL_SIZE: ${HIU_DB_CONNECTION_POOL_SIZE:?}
+      OFFSET_IN_DAYS: ${HIU_OFFSET_IN_DAYS:?}
+      USING_GATEWAY: ${HIU_USING_GATEWAY:?}
+      GATEWAY_BASE_URL: ${ABDM_GATEWAY_BASE_URL:?}
+      GATEWAY_REQUEST_TIMEOUT: ${HIU_GATEWAY_REQUEST_TIMEOUT:?}
+      GATEWAY_JWK_URL: ${ABDM_GATEWAY_JWK_URL:?}
+      HFR_AFFINITY_DOMAINS: ${ABDM_HFR_AFFINITY_DOMAINS:?}
+      RABBITMQ_HOST: ${HIU_RABBITMQ_HOST:?}
+      RABBITMQ_PORT: ${HIU_RABBITMQ_PORT:?}
+      RABBITMQ_USERNAME: ${HIU_RABBITMQ_USERNAME:?}
+      RABBITMQ_PASSWORD: ${HIU_RABBITMQ_PASSWORD:?}
+      MAX_IN_MEMORY_SIZE: ${HIU_MAX_IN_MEMORY_SIZE:?}
+      DATA_FLOW_CONSENT_REQUEST_WAIT_TIME: ${HIU_DATA_FLOW_CONSENT_REQUEST_WAIT_TIME:?}
+      DATA_FLOW_CONSENT_ARTEFACT_WAIT_TIME: ${HIU_DATA_FLOW_CONSENT_ARTEFACT_WAIT_TIME:?}
+      DATA_FLOW_PART_WAIT_TIME: ${HIU_DATA_FLOW_PART_WAIT_TIME:?}
+    ports:
+      - "9053:8003"
+
+  hiu-ui:
+    image: bahmniindiadistro/hiu-ui:${HIU_UI_IMAGE_TAG:?}
+    container_name: hiu-ui
+    environment:
+      BACKEND_BASE_URL: ${HIU_BACKEND_BASE_URL:?}
+      BASE_NAME: ${HIU_UI_BASE_NAME:?}
+    ports:
+      - "5000:5000"
+
+
+volumes:
+  openmrs-data:
+  openmrsdbdata:
+  bahmni-patient-images:
+  bahmni-document-images:
+  postgresql:
+  postgresql_data:
