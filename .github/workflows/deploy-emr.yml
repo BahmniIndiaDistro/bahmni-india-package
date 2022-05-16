@@ -1,7 +1,9 @@
 name: bahmni-india-package EMR deploy
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - BAH-*
     paths:
       - "bahmni-emr/**"
 jobs:
@@ -28,7 +30,11 @@ jobs:
       - deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy notification
+      - name: Deploy success notification
         if: ${{ needs.deploy.result == 'success' }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":":white_check_mark:  New bahmni openmrs docker Images deployed on https://abdm.bahmni-covid19.in/"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data '{"text":":white_check_mark:  New bahmni openmrs docker Image deployed on https://abdm.bahmni-covid19.in/"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Deploy failure notification
+        if: ${{ needs.deploy.result != 'success' }}
+          run: |
+            curl -X POST -H 'Content-type: application/json' --data '{"text":":cross-mark:  New bahmni openmrs docker image deployement failed on https://abdm.bahmni-covid19.in/"}' ${{ secrets.SLACK_WEBHOOK_URL }}
