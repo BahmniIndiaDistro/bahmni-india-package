@@ -1,9 +1,7 @@
 name: Build and Publish Bahmni-Web
 on:
   push:
-    branches:
-      - master
-      - BAH-1595
+    branches: [master]
     paths:
       - ".github/workflows/build_publish_web.yml"
       - "bahmni-web/docker/Dockerfile"
@@ -15,7 +13,7 @@ env:
   BAHMNI_VERSION: 0.94
 
 jobs:
-  docker-build-publish-web:
+  docker-build-publish:
     name: Docker Build & Publish bahmni-web
     runs-on: ubuntu-latest
     steps:

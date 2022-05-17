@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - BAH-1595
     paths:
       - "bahmni-proxy/**"
       - ".github/workflows/build_publish_proxy.yml"
@@ -11,7 +10,7 @@ env:
   BAHMNI_VERSION: 0.94
 
 jobs:
-  docker-build-publish-proxy:
+  docker-build-publish:
     name: Docker Build & Publish proxy
     runs-on: ubuntu-latest
     steps:

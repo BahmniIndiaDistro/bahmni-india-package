@@ -1,11 +1,12 @@
 name: bahmni-india-package EMR deploy
 on:
   workflow_run:
-    workflows: [ "Build and Publish OpenMRS" ]
+    workflows: ["Build and Publish OpenMRS"]
     types:
       - completed
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +21,7 @@ jobs:
             cd bahmni
             docker stop openmrs
             docker pull bahmniindiadistro/bahmni-openmrs-abdm
-            docker compose up -d openmrs
+            docker-compose up -d openmrs
           EOF
   notification:
     name: notification

@@ -1,11 +1,12 @@
 name: bahmni-india-package EMR deploy
 on:
   workflow_run:
-    workflows: [ "Build and Publish Bahmni-Web" ]
+    workflows: ["Build and Publish Bahmni-Web"]
     types:
       - completed
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +21,7 @@ jobs:
             cd bahmni
             docker stop bahmni-web
             docker pull bahmniindiadistro/bahmni-web-abdm
-            docker compose up -d bahmni-web
+            docker-compose up -d bahmni-web
           EOF
   notification:
     name: notification

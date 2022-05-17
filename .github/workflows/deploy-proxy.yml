@@ -1,11 +1,12 @@
 name: bahmni-india-package EMR deploy
 on:
   workflow_run:
-    workflows: [ "Build and Publish Proxy Image" ]
+    workflows: ["Build and Publish Proxy Image"]
     types:
       - completed
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +21,7 @@ jobs:
             cd bahmni
             docker stop proxy
             docker pull bahmniindiadistro/bahmni-proxy-abdm
-            docker compose up -d proxy
+            docker-compose up -d proxy
             git pull
           EOF
   notification:
