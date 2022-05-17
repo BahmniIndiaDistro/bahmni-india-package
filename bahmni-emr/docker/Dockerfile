@@ -8,5 +8,6 @@ RUN unzip -u -d /etc/bahmni_config /tmp/artifacts/default_config.zip
 
 COPY bahmni-emr/resources/*.omod /usr/local/tomcat/.OpenMRS/modules/
 
+
 RUN rm -rf /tmp/artifacts
 

@@ -6,6 +6,7 @@ on:
       - completed
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Deploy
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +21,7 @@ jobs:
             cd bahmni
             docker stop proxy
             docker pull bahmniindiadistro/bahmni-proxy-abdm
-            docker compose up -d proxy
+            docker-compose up -d proxy
             git pull
           EOF
   notification:
