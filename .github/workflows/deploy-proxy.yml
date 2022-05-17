@@ -1,11 +1,9 @@
 name: bahmni-india-package EMR deploy
 on:
-  push:
-    branches:
-      - main
-      - BAH-*
-    paths:
-      - "bahmni-proxy/**"
+  workflow_run:
+    workflows: [ "Build and Publish Proxy Image" ]
+    types:
+      - completed
 jobs:
   deploy:
     name: Deploy
@@ -37,5 +35,5 @@ jobs:
           curl -X POST -H 'Content-type: application/json' --data '{"text":":white_check_mark:  New Bahmni proxy docker Image deployed on https://abdm.bahmni-covid19.in/"}' ${{ secrets.SLACK_WEBHOOK_URL }}
       - name: Deploy failure notification
         if: ${{ needs.deploy.result != 'success' }}
-          run: |
-            curl -X POST -H 'Content-type: application/json' --data '{"text":":cross-mark:  New bahmni proxy docker image deployement failed on https://abdm.bahmni-covid19.in/"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":":red_circle:  New bahmni proxy docker image deployement failed on https://abdm.bahmni-covid19.in/"}' ${{ secrets.SLACK_WEBHOOK_URL }}
