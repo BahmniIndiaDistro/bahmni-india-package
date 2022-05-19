@@ -3,11 +3,10 @@ on:
   push:
     branches:
       - master
+      - ABDM-Infra
     paths:
       - "bahmni-proxy/**"
       - ".github/workflows/build_publish_proxy.yml"
-env:
-  BAHMNI_VERSION: 0.94
 
 jobs:
   docker-build-publish:
@@ -15,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Setting Artifact version
+        run: |
+            APP_VERSION=$(cat bahmni-proxy/.appversion)
+            echo "ARTIFACT_VERSION=$(echo $APP_VERSION-${{github.run_number}})" >> $GITHUB_ENV
       - name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
@@ -26,5 +29,5 @@ jobs:
           context: .
           file: bahmni-proxy/Dockerfile
           push: true
-          tags: bahmniindiadistro/bahmni-proxy-abdm:${{env.BAHMNI_VERSION}}-${{github.run_number}},bahmniindiadistro/bahmni-proxy-abdm
+          tags: bahmniindiadistro/bahmni-proxy:${{env.ARTIFACT_VERSION}},bahmniindiadistro/bahmni-proxy:latest
 
