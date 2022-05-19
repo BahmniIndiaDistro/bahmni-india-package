@@ -6,7 +6,7 @@ on:
       - ABDM-Infra
     paths:
       - ".github/workflows/build_publish_web.yml"
-      - "bahmni-web/docker/Dockerfile"
+      - "bahmni-web/package/docker/Dockerfile"
 
   repository_dispatch:
     types: [ "clinic-config-trigger"  ]
@@ -34,6 +34,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: bahmni-web/docker/Dockerfile
+          file: bahmni-web/package/docker/Dockerfile
           push: true
           tags: bahmniindiadistro/bahmni-web:${{env.ARTIFACT_VERSION}},bahmniindiadistro/bahmni-web:latest

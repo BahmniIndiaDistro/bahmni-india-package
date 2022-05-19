@@ -4,12 +4,12 @@ This directory contains
 - Dockerfile to build a bahmni-web image with a abdm specific ui on top of bahmni/bahmni-web base image
 - scripts to build a image and publish docker repository 
 
-Running the build script builds bahmniindiadistro/bahmni-web-abdm image
+Running the build script builds bahmniindiadistro/bahmni-web image
 
 ## To build image using scripts
 
 Prerequisite
-- default-config and bahmni-india-package should be under same directory. because, it will get the default-config.zip from default-config locally
+- clinic-config and bahmni-india-package should be under same directory. because, it will get the clinic-config.zip from clinic-config locally
 - ndhm-reat.zip should be placed in bahmni-web/resources
 ```
 cd ..
@@ -24,6 +24,6 @@ sh .github/download_artifact.sh ndhm-react NDHMReact ${{secrets.GITHUB_TOKEN}} b
 ```
 To build a docker image
 ```
-docker build -t bahmniindiadistro/bahmni-web-abdm -f bahmni-web/docker/Dockerfile . 
+docker build -t bahmniindiadistro/bahmni-web -f bahmni-web/docker/Dockerfile . 
 ```
 Note: you can also place zip in bahmni-web/resources
