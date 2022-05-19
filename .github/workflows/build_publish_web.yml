@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Download default_config.zip
+      - name: Download clinic_config.zip
         run: sh .github/download_artifact.sh clinic-config ClinicConfig ${{secrets.BAHMNI_PAT}} bahmni-web
       - name: Download ndhm-react.zip
         run: sh .github/download_artifact.sh ndhm-react NDHMReact ${{secrets.BAHMNI_PAT}} bahmni-web
