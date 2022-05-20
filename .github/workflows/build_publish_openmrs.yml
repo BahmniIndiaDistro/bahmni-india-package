@@ -5,7 +5,7 @@ on:
       - master
       - ABDM-Infra
     paths:
-      - "bahmni-emr/docker/Dockerfile"
+      - "bahmni-emr/package/*"
       - ".github/workflows/build_publish_openmrs.yml"
 
   repository_dispatch:
@@ -15,6 +15,8 @@ jobs:
   docker-build-publish:
     name: Docker Build & Publish openmrs
     runs-on: ubuntu-latest
+    env:
+      HELM_CHART_PATH: bahmni-emr/package/helm/
     steps:
       - uses: actions/checkout@v2
       - name: Download clinic_config.zip
@@ -36,7 +38,43 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: bahmni-emr/docker/Dockerfile
+          file: bahmni-emr/package/docker/Dockerfile
           push: true
           tags: bahmniindiadistro/bahmni-openmrs:${{env.ARTIFACT_VERSION}},bahmniindiadistro/bahmni-openmrs:latest
+
+      - name: Helm - Update Version and Image Tag
+        run: |
+          yq --inplace '.image.tag = "${{ env.ARTIFACT_VERSION }}"' $HELM_CHART_PATH/values.yaml
+          yq --inplace '.version = "${{ env.ARTIFACT_VERSION }}"' $HELM_CHART_PATH/Chart.yaml
+
+      - name: Helm Lint
+        run: helm lint $HELM_CHART_PATH
+
+      - name: Helm Package
+        run: helm package $HELM_CHART_PATH
+
+      - name: Helm - Checkout Charts Repository
+        uses: actions/checkout@v2
+        with:
+          repository: Bahmniindiadistro/helm-charts
+          ref: gh-pages
+          path: helm-charts
+          persist-credentials: false
+
+      - name: Helm - Copy chart
+        run: mkdir -p helm-charts/bahmni-openmrs/ && cp bahmni-openmrs-${{ env.ARTIFACT_VERSION }}.tgz helm-charts/bahmni-openmrs/
+
+      - name: Helm - reIndex
+        working-directory: helm-charts/
+        run: helm repo index --merge index.yaml --url https://bahmniindiadistro.github.io/helm-charts/  .
+
+      - name: Helm - Publish Chart
+        working-directory: helm-charts/
+        run: |
+          git config user.name ${{ secrets.BAHMNI_USERNAME}}
+          git config user.email ${{ secrets.BAHMNI_EMAIL}}
+          git add .
+          git commit -m "Release of bahmni-openmrs-${{ env.ARTIFACT_VERSION }}"
+          git push 'https://${{ secrets.BAHMNI_USERNAME}}:${{ secrets.BAHMNI_PAT}}@github.com/bahmniindiadistro/helm-charts.git' gh-pages
+
 

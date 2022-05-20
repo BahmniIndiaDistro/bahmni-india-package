@@ -5,8 +5,8 @@ set -xe
 
 # Packaging default config to embed into default image
 # Working directory : default-config
-cd default-config && scripts/package.sh && cd ..
-cp default-config/target/default_config.zip bahmni-india-package/bahmni-emr/resources/
+cd clinc-config && scripts/package.sh && cd ..
+cp clinc-config/target/clinic_config.zip bahmni-india-package/bahmni-emr/resources/
 
 cd bahmni-india-package
 
