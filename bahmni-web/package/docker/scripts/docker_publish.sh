@@ -6,7 +6,7 @@ echo "[INFO] Pushing build images"
 docker push bahmniindiadistro/bahmni-web:${BAHMNI_WEB_IMAGE_TAG}
 
 echo "[INFO] Tagging build images as SNAPSHOT Images"
-BAHMNI_WEB_SNAPSHOT_IMAGE_TAG=${BAHMNI_VERSION}-SNAPSHOT
+BAHMNI_WEB_SNAPSHOT_IMAGE_TAG=$(cat bahmni-web/.appversion)-SNAPSHOT
 docker tag bahmniindiadistro/bahmni-web:${BAHMNI_WEB_IMAGE_TAG} bahmni/bahmni:${BAHMNI_WEB_SNAPSHOT_IMAGE_TAG}
 
 echo "[INFO] Pushing SNAPSHOT images"
