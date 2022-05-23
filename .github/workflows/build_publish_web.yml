@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - ABDM-Infra
     paths:
       - ".github/workflows/build_publish_web.yml"
       - "bahmni-web/package/*"

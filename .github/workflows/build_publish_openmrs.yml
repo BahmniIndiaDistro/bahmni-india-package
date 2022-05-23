@@ -3,9 +3,8 @@ on:
   push:
     branches:
       - master
-      - ABDM-Infra
     paths:
-      - "bahmni-emr/package/*"
+      - "bahmni-emr/**"
       - ".github/workflows/build_publish_openmrs.yml"
 
   repository_dispatch:
