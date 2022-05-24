@@ -17,7 +17,7 @@ config:
   DB_AUTO_UPDATE: true
   DB_CREATE_TABLES: false
   DB_NAME: openmrs
-  LOAD_DEMO_DATA: false
+  LOAD_DEMO_DATA: true
   DB_DUMP_GZIP_URL: ''
   DEBUG: false
   MODULE_WEB_ADMIN: false
