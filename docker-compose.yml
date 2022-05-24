@@ -13,14 +13,19 @@ services:
 
   openmrs:
     profiles: ["default","openmrs"]
-    image: bahmniindiadistro/bahmni-openmrs-abdm:${OPENMRS_IMAGE_TAG:?}
+    image: bahmniindiadistro/bahmni-openmrs:${OPENMRS_IMAGE_TAG:?}
     environment:
       DB_DATABASE: ${OPENMRS_DB_NAME:?}
       DB_HOST: ${OPENMRS_DB_HOST:?}
-      DB_USERNAME: ${OPENMRS_DB_USERNAME:?}
-      DB_PASSWORD: ${OPENMRS_DB_PASSWORD:?}
+      # We need to remove the ROOT user access from the container and create the user and DB outside of openmrs container
+      DB_USERNAME: ${MYSQL_ROOT_USERNAME:?}
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
+      DB_ROOT_USERNAME: ${MYSQL_ROOT_USERNAME:?}
+      DB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
       DB_CREATE_TABLES: ${OPENMRS_DB_CREATE_TABLES}
       DB_AUTO_UPDATE: ${OPENMRS_DB_AUTO_UPDATE}
+      LOAD_DEMO_DATA: ${OPENMRS_LOAD_DEMO_DATA}
+      DB_DUMP_GZIP_URL: ${OPENMRS_DB_DUMP_GZIP_URL}
       MODULE_WEB_ADMIN: ${OPENMRS_MODULE_WEB_ADMIN}
       DEBUG: ${OPENMRS_DEBUG}
       OPENELIS_HOST: ${OPENELIS_HOST:?}
@@ -39,19 +44,15 @@ services:
       - openmrsdb
 
   openmrsdb:
-    image: bahmni/openmrs-db:${OPENMRS_DB_IMAGE_TAG:?}
+    image: mysql:5.6
     restart: always
     profiles: ["default","openmrs"]
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
-      MYSQL_DATABASE: ${OPENMRS_DB_NAME:?}
-      MYSQL_USER: ${OPENMRS_DB_USERNAME:?}
-      MYSQL_PASSWORD: ${OPENMRS_DB_PASSWORD:?}
     ports:
-      - "3306:3306"
+      - '3306:3306'
     volumes:
-      - "openmrsdbdata:/var/lib/mysql"
-
+      - 'openmrsdbdata:/var/lib/mysql'
   bahmni-web:
     image: bahmniindiadistro/bahmni-web-abdm:${BAHMNI_WEB_IMAGE_TAG:?}
     profiles: ["default","openmrs"]
