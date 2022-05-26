@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - openmrs-fix
     paths:
       - "bahmni-emr/**"
       - ".github/workflows/build_publish_openmrs.yml"
