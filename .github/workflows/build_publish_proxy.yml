@@ -6,6 +6,7 @@ on:
     paths:
       - "bahmni-proxy/**"
       - ".github/workflows/build_publish_proxy.yml"
+  workflow_dispatch:
 
 jobs:
   docker-build-publish:
