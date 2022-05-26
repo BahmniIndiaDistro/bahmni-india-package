@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+      - demo-reports
+
     paths:
       - "bahmni-reports/**"
       - ".github/workflows/build_publish_reports.yml"
