@@ -1,13 +1,10 @@
 name: Build and Publish OpenMRS
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "bahmni-emr/**"
       - ".github/workflows/build_publish_openmrs.yml"
-
-  workflow_dispatch:
 
   repository_dispatch:
     types: ["clinic-config-trigger","hip-module-trigger"]
