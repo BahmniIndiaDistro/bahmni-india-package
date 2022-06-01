@@ -2,11 +2,10 @@ name: Build and Publish Bahmni-Web
 on:
   push:
     branches:
-      - master
-      - ABDM-Infra
+      - main
     paths:
+      - "bahmni-web/**"
       - ".github/workflows/build_publish_web.yml"
-      - "bahmni-web/package/*"
 
   repository_dispatch:
     types: [ "clinic-config-trigger"  ]

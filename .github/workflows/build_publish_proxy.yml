@@ -2,7 +2,7 @@ name: Build and Publish Proxy Image
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - "bahmni-proxy/**"
       - ".github/workflows/build_publish_proxy.yml"

@@ -1,15 +1,13 @@
 name: Build and Publish OpenMRS
 on:
   push:
-    branches:
-      - master
-      - ABDM-Infra
+    branches: [main]
     paths:
       - "bahmni-emr/**"
       - ".github/workflows/build_publish_openmrs.yml"
 
   repository_dispatch:
-    types: ["clinic-config-triggerr","hip-module-trigger"]
+    types: ["clinic-config-trigger","hip-module-trigger"]
 
 jobs:
   docker-build-publish:
