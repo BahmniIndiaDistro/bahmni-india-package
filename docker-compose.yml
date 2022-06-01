@@ -12,13 +12,13 @@ services:
       - "443:443"
 
   openmrs:
-    profiles: [ "default","openmrs","implementer-interface" ]
-    image: bahmniindiadistro/bahmni-openmrs:latest
+    profiles: ['default', 'openmrs']
+    image: bahmniindiadistro/bahmni-openmrs:${OPENMRS_IMAGE_TAG}
     environment:
       DB_DATABASE: ${OPENMRS_DB_NAME:?}
       DB_HOST: ${OPENMRS_DB_HOST:?}
-      DB_USERNAME: ${OPENMRS_DB_USERNAME:?}
-      DB_PASSWORD: ${OPENMRS_DB_PASSWORD:?}
+      DB_USERNAME: ${MYSQL_ROOT_USERNAME:?}
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
       DB_ROOT_USERNAME: ${MYSQL_ROOT_USERNAME:?}
       DB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
       DB_CREATE_TABLES: ${OPENMRS_DB_CREATE_TABLES}
@@ -33,19 +33,19 @@ services:
       OPENELIS_ATOMFEED_PASSWORD: ${OPENELIS_ATOMFEED_PASSWORD:?}
     ports:
       - '8080:8080'
-    volumes:
-      - 'openmrs-data:/usr/local/tomcat/.OpenMRS/modules'
+    #volumes:
+      #- 'openmrs-data:/usr/local/tomcat/.OpenMRS/modules'
       #- "${BAHMNI_OPENMRS_MODULES_PATH:?}/:/usr/local/tomcat/.OpenMRS/modules/"
       #- "${BAHMNI_CONFIG_PATH:?}/:/etc/bahmni_config/"
-      - 'bahmni-patient-images:/home/bahmni/patient_images'
-      - 'bahmni-document-images:/home/bahmni/document_images'
+      #- 'bahmni-patient-images:/home/bahmni/patient_images'
+      #- 'bahmni-document-images:/home/bahmni/document_images'
     depends_on:
       - openmrsdb
 
   openmrsdb:
     image: mysql:5.6
     restart: always
-    profiles: [ "default","openmrs","implementer-interface" ]
+    profiles: ["default","openmrs"]
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
     ports:
