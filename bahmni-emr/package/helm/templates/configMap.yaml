@@ -6,8 +6,6 @@ data:
   DB_AUTO_UPDATE: "{{ .Values.config.DB_AUTO_UPDATE }}"
   DB_CREATE_TABLES: "{{ .Values.config.DB_CREATE_TABLES }}"
   DB_DATABASE: "{{ .Values.config.DB_NAME }}"
-  LOAD_DEMO_DATA: "{{ .Values.config.LOAD_DEMO_DATA }}"
-  DB_DUMP_GZIP_URL: "{{ .Values.config.DB_DUMP_GZIP_URL }}"
   DEBUG: "{{ .Values.config.DEBUG }}"
   MODULE_WEB_ADMIN: "{{ .Values.config.MODULE_WEB_ADMIN }}"
   OPENELIS_HOST: "{{ .Values.config.OPENELIS_HOST }}"
