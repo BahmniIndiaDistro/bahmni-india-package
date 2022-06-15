@@ -1,7 +1,6 @@
 FROM bahmni/openmrs:latest
 
 RUN rm -f /usr/local/tomcat/.OpenMRS/modules/fhir2-1.3.0.omod
-RUN rm -f /usr/local/tomcat/.OpenMRS/modules/fhir2Extension-1.1.0-SNAPSHOT.omod
 
 ADD bahmni-emr/resources/clinic_config.zip /tmp/artifacts/
 RUN rm -rf /etc/bahmni_config
