@@ -1,7 +1,7 @@
 name: Build and Publish OpenMRS
 on:
   push:
-    branches: [main]
+    branches: [BAH-1903]
     paths:
       - "bahmni-emr/**"
       - ".github/workflows/build_publish_openmrs.yml"
