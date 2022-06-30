@@ -1,3 +1,6 @@
+global:
+  storageClass: ""
+
 replicaCount: 1
 
 metadata:
