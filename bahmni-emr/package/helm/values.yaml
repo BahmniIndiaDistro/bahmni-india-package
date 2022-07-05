@@ -46,6 +46,6 @@ storage:
   capacity: "2Gi"
 
 volumes:
-  patient-documents:
+  patientDocuments:
     capacity: "2Gi"
     claimName: openmrs-document-images-pvc
