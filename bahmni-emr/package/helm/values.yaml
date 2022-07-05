@@ -42,9 +42,6 @@ resources:
 autoscaling:
   enabled: false
 
-storage:
-  capacity: "2Gi"
-
 volumes:
   patientDocuments:
     capacity: "2Gi"
