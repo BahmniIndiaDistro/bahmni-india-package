@@ -44,3 +44,8 @@ autoscaling:
 
 storage:
   capacity: "2Gi"
+
+volumes:
+  patient-documents:
+    capacity: "2Gi"
+    claimName: openmrs-document-images-pvc

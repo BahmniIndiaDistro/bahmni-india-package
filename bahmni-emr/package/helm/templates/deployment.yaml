@@ -43,4 +43,4 @@ spec:
       volumes:
         - name: openmrs-document-images
           persistentVolumeClaim:
-            claimName: openmrs-document-images-pvc
+            claimName: {{ .Values.volumes.patient-documents.claimName }}
