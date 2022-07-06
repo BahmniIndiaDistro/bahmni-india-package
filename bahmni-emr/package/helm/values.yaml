@@ -6,7 +6,6 @@ replicaCount: 1
 metadata:
   labels:
     environment: dev
-    name : openmrs-document-images-pvc
 
 image:
   repository: bahmniindiadistro
