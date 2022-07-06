@@ -1,3 +1,6 @@
+global:
+  storageClass: ""
+
 replicaCount: 1
 
 metadata:
@@ -37,3 +40,8 @@ resources:
 
 autoscaling:
   enabled: false
+
+volumes:
+  patientDocuments:
+    capacity: "2Gi"
+    claimName: openmrs-document-images-pvc
