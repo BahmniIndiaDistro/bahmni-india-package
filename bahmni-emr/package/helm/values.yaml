@@ -32,11 +32,7 @@ secrets:
   OPENELIS_ATOMFEED_USER: ""
   OPENELIS_ATOMFEED_PASSWORD: ""
 
-resources:
-  requests:
-    memory: "4Gi"
-  limits:
-      memory: "5Gi"
+resources: {}
 
 autoscaling:
   enabled: false
