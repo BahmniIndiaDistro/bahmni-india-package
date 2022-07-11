@@ -29,3 +29,4 @@ jobs:
           file: bahmni-proxy/package/docker/Dockerfile
           push: true
           tags: bahmniindiadistro/bahmni-proxy:${{env.ARTIFACT_VERSION}},bahmniindiadistro/bahmni-proxy:latest
+          
