@@ -26,10 +26,6 @@ secrets:
   REPORTS_DB_SERVER: ""
   REPORTS_DB_USERNAME: ""
   REPORTS_DB_PASSWORD: ""
-  OPENELIS_DB_SERVER: ""
-  ODOO_DB_SERVER: ""
-  ODOO_DB_USERNAME: ""
-  ODOO_DB_PASSWORD: ""
 
 autoscaling:
   enabled: false
