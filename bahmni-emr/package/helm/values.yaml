@@ -1,3 +1,6 @@
+global:
+  storageClass: ""
+
 replicaCount: 1
 
 metadata:
@@ -15,10 +18,8 @@ service:
 
 config:
   DB_AUTO_UPDATE: true
-  DB_CREATE_TABLES: false
+  DB_CREATE_TABLES: true
   DB_NAME: openmrs
-  LOAD_DEMO_DATA: true
-  DB_DUMP_GZIP_URL: ''
   DEBUG: false
   MODULE_WEB_ADMIN: false
   OPENELIS_HOST: openelis
@@ -26,18 +27,17 @@ config:
 
 secrets:
   DB_HOST: ""
-  DB_ROOT_USERNAME: ""
-  DB_ROOT_PASSWORD: ""
   DB_USERNAME: ""
   DB_PASSWORD: ""
   OPENELIS_ATOMFEED_USER: ""
   OPENELIS_ATOMFEED_PASSWORD: ""
 
-resources:
-  requests:
-    memory: "4Gi"
-  limits:
-      memory: "5Gi"
+resources: {}
 
 autoscaling:
   enabled: false
+
+volumes:
+  patientDocuments:
+    capacity: "2Gi"
+    claimName: openmrs-document-images-pvc

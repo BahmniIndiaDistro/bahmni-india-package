@@ -1,19 +1,18 @@
 version: "3.7"
 services:
   proxy:
-    image: bahmniindiadistro/bahmni-proxy-abdm:${PROXY_IMAGE_TAG:?}
+    image: bahmniindiadistro/bahmni-proxy:${PROXY_IMAGE_TAG:?}
     volumes: 
     #   - ${CERTIFICATE_PATH}:/etc/tls
     - "bahmni-patient-images:/home/bahmni/patient_images"
-    - "bahmni-document-images:/home/bahmni/document_images"
 
     ports:
       - "80:80"
       - "443:443"
 
   openmrs:
-    profiles: ["default","openmrs"]
-    image: bahmniindiadistro/bahmni-openmrs:${OPENMRS_IMAGE_TAG:?}
+    profiles: ['default', 'openmrs']
+    image: bahmniindiadistro/bahmni-openmrs:${OPENMRS_IMAGE_TAG}
     environment:
       DB_DATABASE: ${OPENMRS_DB_NAME:?}
       DB_HOST: ${OPENMRS_DB_HOST:?}
@@ -24,8 +23,6 @@ services:
       DB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
       DB_CREATE_TABLES: ${OPENMRS_DB_CREATE_TABLES}
       DB_AUTO_UPDATE: ${OPENMRS_DB_AUTO_UPDATE}
-      LOAD_DEMO_DATA: ${OPENMRS_LOAD_DEMO_DATA}
-      DB_DUMP_GZIP_URL: ${OPENMRS_DB_DUMP_GZIP_URL}
       MODULE_WEB_ADMIN: ${OPENMRS_MODULE_WEB_ADMIN}
       DEBUG: ${OPENMRS_DEBUG}
       OPENELIS_HOST: ${OPENELIS_HOST:?}
@@ -33,33 +30,38 @@ services:
       OPENELIS_ATOMFEED_USER: ${OPENELIS_ATOMFEED_USER:?}
       OPENELIS_ATOMFEED_PASSWORD: ${OPENELIS_ATOMFEED_PASSWORD:?}
     ports:
-      - "8080:8080"
+      - '8080:8080'
     volumes:
-      #- "openmrs-data:/usr/local/tomcat/.OpenMRS/modules"
-      #- "${BAHMNI_OPENMRS_MODULES_PATH:?}/:/usr/local/tomcat/.OpenMRS/modules/"
-      #- "${BAHMNI_CONFIG_PATH:?}/:/etc/bahmni_config/"
-      - "bahmni-patient-images:/home/bahmni/patient_images"
-      - "bahmni-document-images:/home/bahmni/document_images"
+      # - 'openmrs-data:/usr/local/tomcat/.OpenMRS/modules'
+      - '${BAHMNI_CONFIG_PATH:?}/:/etc/bahmni_config/'
+      - '${BAHMNI_CONFIG_PATH:?}/masterdata/configuration/:/usr/local/tomcat/.OpenMRS/configuration/'
+      # - 'bahmni-patient-images:/home/bahmni/patient_images'
+      # - 'bahmni-document-images:/home/bahmni/document_images'
     depends_on:
       - openmrsdb
 
   openmrsdb:
-    image: mysql:5.6
+    image: ${OPENMRS_DB_IMAGE_NAME:?}
     restart: always
     profiles: ["default","openmrs"]
+    command: --character-set-server=utf8 --collation-server=utf8_general_ci
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
+      MYSQL_DATABASE: ${OPENMRS_DB_NAME:?}
+      MYSQL_USER: ${OPENMRS_DB_USERNAME:?}
+      MYSQL_PASSWORD: ${OPENMRS_DB_PASSWORD:?}
     ports:
       - '3306:3306'
     volumes:
       - 'openmrsdbdata:/var/lib/mysql'
+
   bahmni-web:
-    image: bahmniindiadistro/bahmni-web-abdm:${BAHMNI_WEB_IMAGE_TAG:?}
+    image: bahmniindiadistro/bahmni-web:${BAHMNI_WEB_IMAGE_TAG:?}
     profiles: ["default","openmrs"]
-    #volumes:
+    volumes:
       #- "${BAHMNI_APPS_PATH:?}/ui/app/:/usr/local/apache2/htdocs/bahmni"
       #- "${BAHMNI_APPS_PATH:?}/ui/node_modules/@bower_components/:/usr/local/apache2/htdocs/bahmni/components"
-      #- "${BAHMNI_CONFIG_PATH:?}/:/usr/local/apache2/htdocs/bahmni_config/"
+      - '${BAHMNI_CONFIG_PATH:?}/:/usr/local/apache2/htdocs/bahmni_config/'
 
   db:
     container_name: db
@@ -166,6 +168,7 @@ services:
       BASE_NAME: ${HIU_UI_BASE_NAME:?}
     ports:
       - "5000:5000"
+
   reports:
     image: bahmniindiadistro/reports:${REPORTS_IMAGE_TAG:?}
     profiles: [ "default","reports" ]
@@ -184,8 +187,8 @@ services:
       ODOO_DB_SERVER: odoodb
       ODOO_DB_USERNAME: ${ODOO_DB_USER:?}
       ODOO_DB_PASSWORD: ${ODOO_DB_PASSWORD:?}
-    #volumes:
-    #  - '${BAHMNI_CONFIG_PATH:?}/openmrs/apps/reports/:/etc/bahmni_config/reports/'
+    volumes:
+      - '${BAHMNI_CONFIG_PATH:?}/openmrs/apps/reports/:/etc/bahmni_config/reports/'
     depends_on:
       - reportsdb
       - openmrsdb
@@ -193,12 +196,23 @@ services:
 
   reportsdb:
     image: mysql:5.6
-    profiles: [ "default","reports" ]
+    profiles: ["default","reports"]
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
       MYSQL_DATABASE: ${REPORTS_DB_NAME:?}
       MYSQL_USER: ${REPORTS_DB_USERNAME:?}
       MYSQL_PASSWORD: ${REPORTS_DB_PASSWORD:?}
+  
+  patient-documents:
+     image: 'bahmni/patient-documents:${PATIENT_DOCUMENTS_TAG:?}'
+     ports:
+       - '8099:80'
+     profiles: ["default","openmrs"]
+     volumes:
+       - 'bahmni-document-images:/usr/share/nginx/html/document_images'
+     environment:
+       - OPENMRS_HOST=${OPENMRS_HOST:?}
+
 volumes:
   openmrs-data:
   openmrsdbdata:
