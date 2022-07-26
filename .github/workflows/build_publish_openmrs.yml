@@ -36,7 +36,7 @@ jobs:
           context: .
           file: bahmni-emr/package/docker/Dockerfile
           push: true
-          tags: bahmniindiadistro/bahmni-openmrs:${{env.ARTIFACT_VERSION}},bahmniindiadistro/bahmni-openmrs:latest
+          tags: bahmniindiadistro/openmrs:${{env.ARTIFACT_VERSION}},bahmniindiadistro/openmrs:latest
 
       - name: Helm - Update Version and Image Tag
         run: |
@@ -58,7 +58,7 @@ jobs:
           persist-credentials: false
 
       - name: Helm - Copy chart
-        run: mkdir -p helm-charts/bahmni-openmrs/ && cp bahmni-openmrs-${{ env.ARTIFACT_VERSION }}.tgz helm-charts/bahmni-openmrs/
+        run: mkdir -p helm-charts/openmrs/ && cp openmrs-${{ env.ARTIFACT_VERSION }}.tgz helm-charts/openmrs/
 
       - name: Helm - reIndex
         working-directory: helm-charts/
@@ -70,7 +70,7 @@ jobs:
           git config user.name ${{ secrets.BAHMNI_USERNAME}}
           git config user.email ${{ secrets.BAHMNI_EMAIL}}
           git add .
-          git commit -m "Release of bahmni-openmrs-${{ env.ARTIFACT_VERSION }}"
+          git commit -m "Release of openmrs-${{ env.ARTIFACT_VERSION }}"
           git push 'https://${{ secrets.BAHMNI_USERNAME}}:${{ secrets.BAHMNI_PAT}}@github.com/bahmniindiadistro/helm-charts.git' gh-pages
 
 
