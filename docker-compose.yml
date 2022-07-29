@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   proxy:
-    image: bahmniindiadistro/bahmni-proxy:${PROXY_IMAGE_TAG:?}
+    image: bahmniindiadistro/proxy:${PROXY_IMAGE_TAG:?}
     volumes: 
     #   - ${CERTIFICATE_PATH}:/etc/tls
     - "bahmni-patient-images:/home/bahmni/patient_images"
@@ -12,7 +12,7 @@ services:
 
   openmrs:
     profiles: ['default', 'openmrs']
-    image: bahmniindiadistro/bahmni-openmrs:${OPENMRS_IMAGE_TAG}
+    image: bahmniindiadistro/openmrs:${OPENMRS_IMAGE_TAG}
     environment:
       DB_DATABASE: ${OPENMRS_DB_NAME:?}
       DB_HOST: ${OPENMRS_DB_HOST:?}

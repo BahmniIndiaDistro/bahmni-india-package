@@ -9,7 +9,7 @@ metadata:
 
 image:
   repository: bahmniindiadistro
-  name: bahmni-openmrs
+  name: openmrs
   tag: latest
 
 service:
