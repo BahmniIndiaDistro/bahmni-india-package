@@ -171,7 +171,7 @@ services:
 
   reports:
     image: bahmniindiadistro/reports:${REPORTS_IMAGE_TAG:?}
-    profiles: ["default","reports"]
+    profiles: [ "default","reports" ]
     environment:
       OPENMRS_DB_HOST: ${OPENMRS_DB_HOST:?}
       OPENMRS_DB_NAME: ${OPENMRS_DB_NAME:?}
