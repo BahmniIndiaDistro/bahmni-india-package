@@ -41,3 +41,7 @@ volumes:
   patientDocuments:
     capacity: "2Gi"
     claimName: openmrs-document-images-pvc
+
+nodeSelector: {}
+affinity: {}
+tolerations: {}
