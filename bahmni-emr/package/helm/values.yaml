@@ -44,6 +44,8 @@ volumes:
   patientDocuments:
     capacity: "2Gi"
     claimName: openmrs-document-images-pvc
+  initializerChecksums:
+    capacity: "1Gi"
 
 nodeSelector: {}
 affinity: {}

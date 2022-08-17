@@ -66,8 +66,13 @@ spec:
           volumeMounts:
             - mountPath: /home/bahmni/document_images
               name: openmrs-document-images
+            - mountPath: /usr/local/tomcat/.OpenMRS/configuration_checksums
+              name: openmrs-initializer-checksums
       restartPolicy: Always
       volumes:
         - name: openmrs-document-images
           persistentVolumeClaim:
             claimName: {{ .Values.volumes.patientDocuments.claimName }}
+        - name: openmrs-initializer-checksums
+          persistentVolumeClaim:
+            claimName: openmrs-initializer-checksums-pvc
