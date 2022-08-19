@@ -68,6 +68,8 @@ spec:
               name: openmrs-document-images
             - mountPath: /usr/local/tomcat/.OpenMRS/configuration_checksums
               name: openmrs-initializer-checksums
+            - mountPath: /home/bahmni/clinical_forms
+              name: openmrs-clinical-forms
       restartPolicy: Always
       volumes:
         - name: openmrs-document-images
@@ -76,3 +78,6 @@ spec:
         - name: openmrs-initializer-checksums
           persistentVolumeClaim:
             claimName: openmrs-initializer-checksums-pvc
+        - name: openmrs-clinical-forms
+          persistentVolumeClaim:
+            claimName: openmrs-clinical-forms-pvc
