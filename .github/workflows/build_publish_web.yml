@@ -7,6 +7,8 @@ on:
       - "bahmni-web/**"
       - ".github/workflows/build_publish_web.yml"
 
+  workflow_dispatch:
+
   repository_dispatch:
     types: [ "clinic-config-trigger", "ndhm-react-trigger" ]
 
