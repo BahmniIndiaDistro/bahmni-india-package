@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - BAH-2208
     paths:
       - "bahmni-emr/**"
       - ".github/workflows/build_publish_openmrs.yml"
