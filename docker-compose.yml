@@ -117,6 +117,9 @@ services:
       Cors:allowedOrigins: ${HIP_CORS_ALLOWED_ORIGIN:?}
       Hip-Service:Url: ${HIP_URL:?}
       Bahmni:Id: ${HIP_ID:?}
+      rabbit:HostName: ${RABBITMQ_HOST:?}
+      rabbit:UserName: ${RABBITMQ_USERNAME:?}
+      rabbit:Password: ${RABBITMQ_PASSWORD:?}
       ConnectionStrings:DefaultConnection: Host=${HIP_DB_HOST:?};Port=${HIP_DB_PORT:?};Username=${HIP_DB_USER:?};Password=${HIP_DB_PASSWORD:?};Database=${HIP_DB_NAME:?};
 
   hiu:
