@@ -2,17 +2,21 @@ version: "3.7"
 services:
   proxy:
     image: bahmniindiadistro/proxy:${PROXY_IMAGE_TAG:?}
-    volumes: 
+    volumes:
     #   - ${CERTIFICATE_PATH}:/etc/tls
     - "bahmni-patient-images:/home/bahmni/patient_images"
 
     ports:
       - "80:80"
       - "443:443"
+  bahmni-config:
+    image: '${CONFIG_IMAGE_NAME:?}:${CONFIG_IMAGE_TAG:?}'
+    volumes:
+      - '${CONFIG_VOLUME:?}:/usr/local/bahmni_config'
 
   openmrs:
     profiles: ['default', 'openmrs']
-    image: bahmniindiadistro/openmrs:${OPENMRS_IMAGE_TAG}
+    image: bahmni/openmrs:${OPENMRS_IMAGE_TAG}
     environment:
       DB_DATABASE: ${OPENMRS_DB_NAME:?}
       DB_HOST: ${OPENMRS_DB_HOST:?}
@@ -36,8 +40,7 @@ services:
       - '8080:8080'
     volumes:
       # - 'openmrs-data:/usr/local/tomcat/.OpenMRS/modules'
-      - '${BAHMNI_CONFIG_PATH:?}/:/etc/bahmni_config/'
-      - '${BAHMNI_CONFIG_PATH:?}/masterdata/configuration/:/usr/local/tomcat/.OpenMRS/configuration/'
+      - '${CONFIG_VOLUME:?}:/etc/bahmni_config/:ro'
       # - 'bahmni-patient-images:/home/bahmni/patient_images'
       # - 'bahmni-document-images:/home/bahmni/document_images'
     depends_on:
@@ -59,12 +62,12 @@ services:
       - 'openmrsdbdata:/var/lib/mysql'
 
   bahmni-web:
-    image: bahmniindiadistro/bahmni-web:${BAHMNI_WEB_IMAGE_TAG:?}
+    image: bahmni/bahmni-web:${BAHMNI_WEB_IMAGE_TAG:?}
     profiles: ["default","openmrs"]
     volumes:
       #- "${BAHMNI_APPS_PATH:?}/ui/app/:/usr/local/apache2/htdocs/bahmni"
       #- "${BAHMNI_APPS_PATH:?}/ui/node_modules/@bower_components/:/usr/local/apache2/htdocs/bahmni/components"
-      - '${BAHMNI_CONFIG_PATH:?}/:/usr/local/apache2/htdocs/bahmni_config/'
+      - '${CONFIG_VOLUME:?}:/usr/local/apache2/htdocs/bahmni_config/:ro'
 
   db:
     container_name: db
@@ -176,7 +179,7 @@ services:
       - "5000:5000"
 
   reports:
-    image: bahmniindiadistro/reports:${REPORTS_IMAGE_TAG:?}
+    image: bahmni/reports:${REPORTS_IMAGE_TAG:?}
     profiles: [ "default","reports" ]
     environment:
       OPENMRS_DB_HOST: ${OPENMRS_DB_HOST:?}
@@ -194,7 +197,7 @@ services:
       ODOO_DB_USERNAME: ${ODOO_DB_USER:?}
       ODOO_DB_PASSWORD: ${ODOO_DB_PASSWORD:?}
     volumes:
-      - '${BAHMNI_CONFIG_PATH:?}/openmrs/apps/reports/:/etc/bahmni_config/reports/'
+      - '${CONFIG_VOLUME:?}:/etc/bahmni_config/:ro'
     depends_on:
       - reportsdb
       - openmrsdb
@@ -208,7 +211,7 @@ services:
       MYSQL_DATABASE: ${REPORTS_DB_NAME:?}
       MYSQL_USER: ${REPORTS_DB_USERNAME:?}
       MYSQL_PASSWORD: ${REPORTS_DB_PASSWORD:?}
-  
+
   patient-documents:
      image: 'bahmni/patient-documents:${PATIENT_DOCUMENTS_TAG:?}'
      ports:
@@ -233,6 +236,9 @@ services:
     depends_on:
       - openmrs
 
+  abha-verification:
+    image: bahmniindiadistro/abha-verification:${ABHA_VERIFICATION_IMAGE_TAG:?}
+
 volumes:
   openmrs-data:
   openmrsdbdata:
@@ -240,3 +246,4 @@ volumes:
   bahmni-document-images:
   postgresql:
   postgresql_data:
+  bahmni-config:
