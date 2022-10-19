@@ -13,6 +13,10 @@ spec:
       targetPort: 8080
       protocol: TCP
       name: '8080'
+    - port: 8280
+      targetPort: 8280
+      protocol: TCP
+      name: '8280'
   selector:
     app: {{ .Chart.Name }}
     environment: {{ .Values.metadata.labels.environment }}
