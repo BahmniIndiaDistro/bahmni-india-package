@@ -17,7 +17,7 @@ jobs:
     name: Docker Build & Publish openmrs
     runs-on: ubuntu-latest
     env:
-      HELM_CHART_PATH: bahmni-emr/package/helm/
+      HELM_CHART_PATH: bahmni-emr/package/helm/openmrs
     steps:
       - uses: actions/checkout@v2
       - name: Download hip module omod
@@ -38,9 +38,13 @@ jobs:
           file: bahmni-emr/package/docker/Dockerfile
           push: true
           tags: bahmniindiadistro/openmrs:${{env.ARTIFACT_VERSION}},bahmniindiadistro/openmrs:latest
-
+      - name: Pull Bahmni Default Config Helm Chart
+        run: |
+          helm pull --repo https://bahmni.github.io/helm-charts openmrs --devel --untar --untardir bahmni-emr/package/helm/
       - name: Helm - Update Version and Image Tag
         run: |
+          yq --inplace '.image.repository = "bahmniindiadistro"' $HELM_CHART_PATH/values.yaml
+          yq --inplace '.description = "Helm chart for OpenMRS of Bahmni India distro "' $HELM_CHART_PATH/Chart.yaml
           yq --inplace '.image.tag = "${{ env.ARTIFACT_VERSION }}"' $HELM_CHART_PATH/values.yaml
           yq --inplace '.version = "${{ env.ARTIFACT_VERSION }}"' $HELM_CHART_PATH/Chart.yaml
 
