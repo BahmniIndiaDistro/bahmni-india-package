@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    environment: {{ .Values.metadata.labels.environment }}
+
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      environment: {{ .Values.metadata.labels.environment }}
+  revisionHistoryLimit: 5
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        environment: {{ .Values.metadata.labels.environment }}
+    spec:
+      {{ if or .Values.global.nodeSelector .Values.nodeSelector }}
+      nodeSelector:
+      {{ if .Values.nodeSelector }}
+      {{ .Values.nodeSelector | toYaml | nindent 8}}
+      {{ else }}
+      {{.Values.global.nodeSelector | toYaml | nindent 8}}
+      {{ end }}
+      {{ end }}
+
+      {{ if or .Values.global.affinity .Values.affinity }}
+      affinity:
+      {{ if .Values.affinity }}
+      {{ .Values.affinity | toYaml | nindent 8}}
+      {{ else }}
+      {{.Values.global.affinity | toYaml | nindent 8}}
+      {{ end }}
+      {{ end }}
+
+      {{ if or .Values.global.tolerations .Values.tolerations }}
+      tolerations:
+      {{ if .Values.tolerations }}
+      {{ .Values.tolerations | toYaml | nindent 8}}
+      {{ else }}
+      {{.Values.global.tolerations | toYaml | nindent 8}}
+      {{ end }}
+      {{ end }}
+
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}-config
+                optional: false
+            - secretRef:
+                name: {{.Chart.Name }}-secrets
+                optional: false
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /home/bahmni/document_images
+              name: openmrs-document-images
+            - mountPath: /usr/local/tomcat/.OpenMRS/configuration_checksums
+              name: openmrs-initializer-checksums
+            - mountPath: /home/bahmni/clinical_forms
+              name: openmrs-clinical-forms
+      restartPolicy: Always
+      volumes:
+        - name: openmrs-document-images
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.patientDocuments.claimName }}
+        - name: openmrs-initializer-checksums
+          persistentVolumeClaim:
+            claimName: openmrs-initializer-checksums-pvc
+        - name: openmrs-clinical-forms
+          persistentVolumeClaim:
+            claimName: openmrs-clinical-forms-pvc
