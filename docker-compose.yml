@@ -16,7 +16,7 @@ services:
 
   openmrs:
     profiles: ['default', 'openmrs']
-    image: bahmni/openmrs:${OPENMRS_IMAGE_TAG}
+    image: bahmniindiadistro/openmrs:${OPENMRS_IMAGE_TAG}
     environment:
       DB_DATABASE: ${OPENMRS_DB_NAME:?}
       DB_HOST: ${OPENMRS_DB_HOST:?}
