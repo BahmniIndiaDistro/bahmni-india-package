@@ -18,6 +18,7 @@ image:
 service:
   type: ClusterIP
   port: 8080
+  jmxport: 8280
 
 config:
   DB_AUTO_UPDATE: true

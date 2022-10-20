@@ -13,7 +13,7 @@ spec:
       targetPort: 8080
       protocol: TCP
       name: '8080'
-    - port: 8280
+    - port: {{ .Values.service.jmxport }}
       targetPort: 8280
       protocol: TCP
       name: '8280'
