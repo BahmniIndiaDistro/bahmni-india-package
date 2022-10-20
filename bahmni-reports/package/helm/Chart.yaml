@@ -1,6 +1,0 @@
-apiVersion: v2
-name: reports
-description: Helm Chart for Bahmni Reports
-type: application
-version: 1.0.0
-

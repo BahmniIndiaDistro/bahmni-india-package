@@ -1,5 +1,0 @@
-apiVersion: v2
-name: bahmni-web
-description: Helm chart for bahmni-web India distro
-type: application
-version: 1.0.0
