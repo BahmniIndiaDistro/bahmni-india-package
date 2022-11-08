@@ -20,11 +20,8 @@ services:
     environment:
       DB_DATABASE: ${OPENMRS_DB_NAME:?}
       DB_HOST: ${OPENMRS_DB_HOST:?}
-      # We need to remove the ROOT user access from the container and create the user and DB outside of openmrs container
-      DB_USERNAME: ${MYSQL_ROOT_USERNAME:?}
-      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
-      DB_ROOT_USERNAME: ${MYSQL_ROOT_USERNAME:?}
-      DB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
+      DB_USERNAME: ${OPENMRS_DB_USERNAME:?}
+      DB_PASSWORD: ${OPENMRS_DB_PASSWORD:?}
       DB_CREATE_TABLES: ${OPENMRS_DB_CREATE_TABLES}
       DB_AUTO_UPDATE: ${OPENMRS_DB_AUTO_UPDATE}
       MODULE_WEB_ADMIN: ${OPENMRS_MODULE_WEB_ADMIN}
