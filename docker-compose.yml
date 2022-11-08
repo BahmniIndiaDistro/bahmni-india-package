@@ -20,11 +20,8 @@ services:
     environment:
       DB_DATABASE: ${OPENMRS_DB_NAME:?}
       DB_HOST: ${OPENMRS_DB_HOST:?}
-      # We need to remove the ROOT user access from the container and create the user and DB outside of openmrs container
-      DB_USERNAME: ${MYSQL_ROOT_USERNAME:?}
-      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
-      DB_ROOT_USERNAME: ${MYSQL_ROOT_USERNAME:?}
-      DB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
+      DB_USERNAME: ${OPENMRS_DB_USERNAME:?}
+      DB_PASSWORD: ${OPENMRS_DB_PASSWORD:?}
       DB_CREATE_TABLES: ${OPENMRS_DB_CREATE_TABLES}
       DB_AUTO_UPDATE: ${OPENMRS_DB_AUTO_UPDATE}
       MODULE_WEB_ADMIN: ${OPENMRS_MODULE_WEB_ADMIN}
@@ -72,6 +69,7 @@ services:
   db:
     container_name: db
     image: postgres:${POSTGRES_IMAGE_TAG:?}
+    profiles: ["default","abdm"]
     environment:
       - POSTGRES_USER=${HIP_DB_USER:?}
       - POSTGRES_PASSWORD=${HIP_DB_PASSWORD:?}
@@ -82,11 +80,13 @@ services:
       - postgresql_data:/var/lib/postgresql/data
   rabbitmq:
       image: rabbitmq:${RABBITMQ_IMAGE_TAG:?}
+      profiles: ["default","abdm"]
       container_name: rabbitmq
       ports:
         - "5672:5672"
   otp:
       image: bahmniindiadistro/otp-service:${OTP_SERVICE_IMAGE_TAG:?}
+      profiles: ["default","abdm"]
       container_name: otp
       depends_on:
         - db
@@ -95,6 +95,7 @@ services:
 
   hiu-db-setup:
       image: bahmniindiadistro/hiu-db:${HIU_DB_INITIALIZER_IMAGE_TAG:?}
+      profiles: ["default","abdm"]
       container_name: hiu-db-setup
       environment:
         - 'JAVA_TOOL_OPTIONS=-Djdbc.url=${HIU_DB_URL:?} -Djdbc.username=${HIU_DB_USER:?} -Djdbc.password=${HIU_DB_PASSWORD:?} -Djdbc.database=${HIU_DB_NAME:?}'
@@ -102,6 +103,7 @@ services:
   hip:
     container_name: hip
     image: bahmniindiadistro/hip:${HIP_IMAGE_TAG:?}
+    profiles: ["default","abdm"]
     ports:
       - "8000:80"
     depends_on:
@@ -130,6 +132,7 @@ services:
 
   hiu:
     image: bahmniindiadistro/hiu:${HIU_IMAGE_TAG:?}
+    profiles: ["default","abdm"]
     container_name: hiu
     volumes:
       - ./:/shared
@@ -171,6 +174,7 @@ services:
 
   hiu-ui:
     image: bahmniindiadistro/hiu-ui:${HIU_UI_IMAGE_TAG:?}
+    profiles: ["default","abdm"]
     container_name: hiu-ui
     environment:
       BACKEND_BASE_URL: ${HIU_BACKEND_BASE_URL:?}
@@ -238,6 +242,7 @@ services:
 
   abha-verification:
     image: bahmniindiadistro/abha-verification:${ABHA_VERIFICATION_IMAGE_TAG:?}
+    profiles: ["default","abdm"]
 
 volumes:
   openmrs-data:
