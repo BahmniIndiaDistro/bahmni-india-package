@@ -113,17 +113,17 @@ services:
     volumes:
       - ./:/shared
     environment:
-      Gateway:clientSecret: ${HIP_SECRET:?}
-      Gateway:clientId: ${HIP_CLIENTID:?}
+      Gateway:clientSecret: ${ABDM_GATEWAY_CLIENT_SECRET:?}
+      Gateway:clientId: ${ABDM_GATEWAY_CLIENT_ID:?}
       Gateway:url: ${ABDM_GATEWAY_URL:?}
       OpenMrs:url: ${OPENMRS_URL:?}
       OpenMrs:password: ${OPENMRS_PASSWORD:?}
+      OpenMrs:phoneNumber: ${PHONE_NUMBER:?}
       Gateway:cmSuffix: ${ABDM_CONSENT_MANAGEMENT_SUFFIX:?}
       OtpService:BaseUrl: ${HIP_OTP_SERVICE_URL:?}
       hip:url: ${HIP_URL:?}
       HEALTH_CHECK_DURATION: ${HIP_OPENMRS_HEALTH_CHECK_DURATION:?}
       Cors:allowedOrigins: ${HIP_CORS_ALLOWED_ORIGIN:?}
-      Hip-Service:Url: ${HIP_URL:?}
       Bahmni:Id: ${HIP_ID:?}
       rabbit:HostName: ${RABBITMQ_HOST:?}
       rabbit:UserName: ${RABBITMQ_USERNAME:?}
@@ -147,8 +147,8 @@ services:
       DEFAULT_PAGE_SIZE: ${HIU_DEFAULT_PAGE_SIZE:?}
       MAX_PAGE_SIZE: ${HIU_MAX_PAGE_SIZE:?}
       LOCAL_STORAGE_PATH: ${HIU_LOCAL_STORAGE_PATH}
-      HIU_CLIENT_ID: ${HIU_CLIENT_ID:?}
-      HIU_CLIENT_SECRET: ${HIU_CLIENT_SECRET:?}
+      HIU_CLIENT_ID: ${ABDM_GATEWAY_CLIENT_ID:?}
+      HIU_CLIENT_SECRET: ${ABDM_GATEWAY_CLIENT_SECRET:?}
       POSTGRES_HOST: ${HIU_DB_HOST:?}
       POSTGRES_PORT: ${HIU_DB_PORT}
       CONSENT_MANAGER_DB_NAME: ${HIU_DB_NAME:?}
