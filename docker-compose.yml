@@ -179,6 +179,8 @@ services:
     environment:
       BACKEND_BASE_URL: ${HIU_BACKEND_BASE_URL:?}
       BASE_NAME: ${HIU_UI_BASE_NAME:?}
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET:?}
+      TITLE: "HIU"
     ports:
       - "5000:5000"
 
