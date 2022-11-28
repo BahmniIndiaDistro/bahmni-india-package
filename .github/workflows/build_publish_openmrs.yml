@@ -38,6 +38,13 @@ jobs:
           file: bahmni-emr/package/docker/Dockerfile
           push: true
           tags: bahmniindiadistro/openmrs:${{env.ARTIFACT_VERSION}},bahmniindiadistro/openmrs:latest
+      - name: Docker Build and push for Performance
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: bahmni-emr/package/docker/profiling.Dockerfile
+          push: true
+          tags: bahmniindiadistro/openmrs:profiling
       - name: Pull Bahmni Default Config Helm Chart
         run: |
           helm pull --repo https://bahmni.github.io/helm-charts openmrs --devel --untar --untardir bahmni-emr/package/helm/
