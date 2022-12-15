@@ -198,6 +198,21 @@ services:
     ports:
       - "5000:5000"
 
+  hip-atomfeed-listener:
+    container_name: hip-atomfeed-listener
+    image: bahmniindiadistro/hip-atomfeed:${HIP_ATOMFEED_IMAGE_TAG:?}
+    profiles: ["default","abdm"]
+    environment:
+      DATABASE_URL: ${HIP_ATOMFEED_DB_URL:?}
+      DATABASE_NAME: ${HIP_ATOMFEED_DB_NAME:?}
+      DATABASE_USERNAME: ${HIP_DB_USER:?}
+      DATABASE_PASSWORD: ${HIP_DB_PASSWORD:?}
+      OPENMRS_URL: ${OPENMRS_SESSION_URL:?}
+      OPENMRS_ENCOUNTER_FEED_URL: ${OPENMRS_ENCOUNTER_FEED_URL:?}
+      HIP_URL: ${HIP_URL:?}
+    depends_on:
+      - db
+
   reports:
     image: bahmni/reports:${REPORTS_IMAGE_TAG:?}
     profiles: [ "default","reports" ]
