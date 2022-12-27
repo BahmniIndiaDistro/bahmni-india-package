@@ -45,7 +45,6 @@ services:
       MAIL_USER: ${MAIL_USER}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
       #HIP-OMOD Variables. Refer here https://github.com/BahmniIndiaDistro/openmrs-module-hip/tree/master#docker-setup
-      LOCATION: ${LOCATION:?}
       PHONE_NUMBER: ${PHONE_NUMBER:?}
     # ports:
       # - ${OMRS_DEV_DEBUG_PORT}:${OMRS_DEV_DEBUG_PORT}
