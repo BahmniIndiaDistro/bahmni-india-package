@@ -126,8 +126,6 @@ services:
       - db
       - otp
       - rabbitmq
-    volumes:
-      - ./:/shared
     environment:
       Gateway:clientSecret: ${ABDM_GATEWAY_CLIENT_SECRET:?}
       Gateway:clientId: ${ABDM_GATEWAY_CLIENT_ID:?}
@@ -150,8 +148,6 @@ services:
     image: bahmniindiadistro/hiu:${HIU_IMAGE_TAG:?}
     profiles: ["default","abdm"]
     container_name: hiu
-    volumes:
-      - ./:/shared
     environment:
       HIU_ID: ${HIU_ID:?}
       HIU_NAME: ${HIU_NAME:?}
