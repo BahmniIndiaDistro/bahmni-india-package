@@ -108,6 +108,7 @@ services:
         - db
       environment:
         whitelisted:numbers: ${OTP_WHITELIST_NUMBERS}
+        ConnectionStrings:DefaultConnection: Host=${OTP_DB_HOST:?};Port=${OTP_DB_PORT:?};Username=${OTP_DB_USER:?};Password=${OTP_DB_PASSWORD:?};Database=${OTP_DB_NAME:?};
 
   hiu-db-setup:
       image: bahmniindiadistro/hiu-db:${HIU_DB_INITIALIZER_IMAGE_TAG:?}
