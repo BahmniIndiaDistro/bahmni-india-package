@@ -107,9 +107,8 @@ services:
       depends_on:
         - db
       environment:
-        whitelisted:numbers: ""
+        whitelisted:numbers: ${OTP_WHITELIST_NUMBERS}
         ConnectionStrings:DefaultConnection: Host=${OTP_DB_HOST:?};Port=${OTP_DB_PORT:?};Username=${OTP_DB_USER:?};Password=${OTP_DB_PASSWORD:?};Database=${OTP_DB_NAME:?};
-
 
   hiu-db-setup:
       image: bahmniindiadistro/hiu-db:${HIU_DB_INITIALIZER_IMAGE_TAG:?}
@@ -128,8 +127,6 @@ services:
       - db
       - otp
       - rabbitmq
-    volumes:
-      - ./:/shared
     environment:
       Gateway:clientSecret: ${ABDM_GATEWAY_CLIENT_SECRET:?}
       Gateway:clientId: ${ABDM_GATEWAY_CLIENT_ID:?}
@@ -152,8 +149,6 @@ services:
     image: bahmniindiadistro/hiu:${HIU_IMAGE_TAG:?}
     profiles: ["default","abdm"]
     container_name: hiu
-    volumes:
-      - ./:/shared
     environment:
       HIU_ID: ${HIU_ID:?}
       HIU_NAME: ${HIU_NAME:?}
