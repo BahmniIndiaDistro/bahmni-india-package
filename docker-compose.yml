@@ -15,7 +15,7 @@ services:
       - '${CONFIG_VOLUME:?}:/usr/local/bahmni_config'
 
   openmrs:
-    profiles: ['default', 'openmrs']
+    profiles: ['emr']
     image: bahmniindiadistro/openmrs:${OPENMRS_IMAGE_TAG}
     environment:
       OMRS_DB_NAME: ${OPENMRS_DB_NAME:?}
@@ -61,7 +61,7 @@ services:
   openmrsdb:
     image: ${OPENMRS_DB_IMAGE_NAME:?}
     restart: always
-    profiles: ["default","openmrs"]
+    profiles: ["emr"]
     command: --character-set-server=utf8 --collation-server=utf8_general_ci
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
@@ -76,7 +76,7 @@ services:
 
   bahmni-web:
     image: bahmni/bahmni-web:${BAHMNI_WEB_IMAGE_TAG:?}
-    profiles: ["default","openmrs"]
+    profiles: ["emr"]
     volumes:
       #- "${BAHMNI_APPS_PATH:?}/ui/app/:/usr/local/apache2/htdocs/bahmni"
       #- "${BAHMNI_APPS_PATH:?}/ui/node_modules/@bower_components/:/usr/local/apache2/htdocs/bahmni/components"
@@ -85,7 +85,7 @@ services:
   db:
     container_name: db
     image: postgres:${POSTGRES_IMAGE_TAG:?}
-    profiles: ["default","abdm"]
+    profiles: ["abdm"]
     environment:
       - POSTGRES_USER=${HIP_DB_USER:?}
       - POSTGRES_PASSWORD=${HIP_DB_PASSWORD:?}
@@ -96,13 +96,13 @@ services:
       - postgresql_data:/var/lib/postgresql/data
   rabbitmq:
       image: rabbitmq:${RABBITMQ_IMAGE_TAG:?}
-      profiles: ["default","abdm"]
+      profiles: ["abdm"]
       container_name: rabbitmq
       ports:
         - "5672:5672"
   otp:
       image: bahmniindiadistro/otp-service:${OTP_SERVICE_IMAGE_TAG:?}
-      profiles: ["default","abdm"]
+      profiles: ["abdm"]
       container_name: otp
       depends_on:
         - db
@@ -112,7 +112,7 @@ services:
 
   hiu-db-setup:
       image: bahmniindiadistro/hiu-db:${HIU_DB_INITIALIZER_IMAGE_TAG:?}
-      profiles: ["default","abdm"]
+      profiles: ["abdm"]
       container_name: hiu-db-setup
       environment:
         - 'JAVA_TOOL_OPTIONS=-Djdbc.url=${HIU_DB_URL:?} -Djdbc.username=${HIU_DB_USER:?} -Djdbc.password=${HIU_DB_PASSWORD:?} -Djdbc.database=${HIU_DB_NAME:?}'
@@ -120,7 +120,7 @@ services:
   hip:
     container_name: hip
     image: bahmniindiadistro/hip:${HIP_IMAGE_TAG:?}
-    profiles: ["default","abdm"]
+    profiles: ["abdm"]
     ports:
       - "8000:80"
     depends_on:
@@ -147,7 +147,7 @@ services:
 
   hiu:
     image: bahmniindiadistro/hiu:${HIU_IMAGE_TAG:?}
-    profiles: ["default","abdm"]
+    profiles: ["abdm"]
     container_name: hiu
     environment:
       HIU_ID: ${HIU_ID:?}
@@ -187,7 +187,7 @@ services:
 
   hiu-ui:
     image: bahmniindiadistro/hiu-ui:${HIU_UI_IMAGE_TAG:?}
-    profiles: ["default","abdm"]
+    profiles: ["abdm"]
     container_name: hiu-ui
     environment:
       BACKEND_BASE_URL: ${HIU_BACKEND_BASE_URL:?}
@@ -200,7 +200,7 @@ services:
   hip-atomfeed-listener:
     container_name: hip-atomfeed-listener
     image: bahmniindiadistro/hip-atomfeed:${HIP_ATOMFEED_IMAGE_TAG:?}
-    profiles: ["default","abdm"]
+    profiles: ["abdm"]
     environment:
       DATABASE_URL: ${HIP_ATOMFEED_DB_URL:?}
       DATABASE_NAME: ${HIP_ATOMFEED_DB_NAME:?}
@@ -217,7 +217,7 @@ services:
 
   reports:
     image: bahmni/reports:${REPORTS_IMAGE_TAG:?}
-    profiles: [ "default","reports" ]
+    profiles: [ "reports" ]
     environment:
       OPENMRS_DB_HOST: ${OPENMRS_DB_HOST:?}
       OPENMRS_DB_NAME: ${OPENMRS_DB_NAME:?}
@@ -242,7 +242,7 @@ services:
 
   reportsdb:
     image: mysql:5.6
-    profiles: ["default","reports"]
+    profiles: ["reports"]
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
       MYSQL_DATABASE: ${REPORTS_DB_NAME:?}
@@ -253,7 +253,7 @@ services:
      image: 'bahmni/patient-documents:${PATIENT_DOCUMENTS_TAG:?}'
      ports:
        - '8099:80'
-     profiles: ["default","openmrs"]
+     profiles: ["emr"]
      volumes:
        - 'bahmni-document-images:/usr/share/nginx/html/document_images'
      environment:
@@ -261,13 +261,13 @@ services:
 
   appointments:
     image: bahmni/appointments:${APPOINTMENTS_IMAGE_TAG:?}
-    profiles: [ "default","appointments" ]
+    profiles: ["emr","appointments"]
 #    volumes:
 #      - "${APPOINTMENTS_PATH:?}/dist/:/usr/local/apache2/htdocs/appointments"
 
   implementer-interface:
     image: bahmni/implementer-interface:${IMPLEMENTER_INTERFACE_IMAGE_TAG:?}
-    profiles: ["default","implementer-interface"]
+    profiles: ["emr","implementer-interface"]
     #volumes:
     #  - "${IMPLEMENTER_INTERFACE_CODE_PATH:?}/dist:/usr/local/apache2/htdocs/implementer_interface"
     depends_on:
@@ -275,7 +275,7 @@ services:
 
   abha-verification:
     image: bahmniindiadistro/abha-verification:${ABHA_VERIFICATION_IMAGE_TAG:?}
-    profiles: ["default","abdm"]
+    profiles: ["abdm"]
 
 volumes:
   openmrs-data:
