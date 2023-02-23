@@ -362,3 +362,5 @@ volumes:
   postgresql_data:
   bahmni-config:
   configuration_checksums:
+  craterdb:
+  crater-app-data:
