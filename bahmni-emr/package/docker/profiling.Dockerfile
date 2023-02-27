@@ -1,9 +1,9 @@
 FROM bahmniindiadistro/openmrs:latest
 
-COPY bahmni-emr/package/docker/resources/modify-server-properties.sh modify-server-properties.sh
-RUN chmod +x modify-server-properties.sh 
-RUN ./modify-server-properties.sh
-RUN rm -rf modify-server-properties.sh
+# COPY bahmni-emr/package/docker/resources/modify-server-properties.sh modify-server-properties.sh
+# RUN chmod +x modify-server-properties.sh 
+# RUN ./modify-server-properties.sh
+# RUN rm -rf modify-server-properties.sh
 
 RUN mkdir -p /etc/profiling/
 RUN yum install -y \
