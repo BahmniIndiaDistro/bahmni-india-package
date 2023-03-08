@@ -42,7 +42,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           file: bahmni-emr/package/docker/Dockerfile
           push: true
-          tags: bahmniindiadistro/openmrs:${{env.ARTIFACT_VERSION}},bahmniindiadistro/openmrs:latest
+          tags: bahmniindiadistro/openmrs:${{env.ARTIFACT_VERSION}},bahmniindiadistro/openmrs:perf-test
       - name: Docker Build and push for Performance
         uses: docker/build-push-action@v3
         with:

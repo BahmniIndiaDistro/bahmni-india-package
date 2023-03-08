@@ -1,4 +1,4 @@
-FROM bahmniindiadistro/openmrs:latest
+FROM bahmniindiadistro/openmrs:perf-test
 
 # COPY bahmni-emr/package/docker/resources/modify-server-properties.sh modify-server-properties.sh
 # RUN chmod +x modify-server-properties.sh 
