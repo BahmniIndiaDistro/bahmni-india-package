@@ -3,10 +3,10 @@ on:
   push:
     branches:
       - master
-      - BAH-2877
   repository_dispatch:
     types:
       - bahmni-helm-publish-event
+      - bahmniindia-helm-publish-event
       - openmrs-db-publish-event
   workflow_dispatch:
     inputs:
@@ -55,6 +55,7 @@ jobs:
             --comment "Update running containers" \
             --parameters '{
                 "commands": [
+                  ". /home/ubuntu/.bash_profile"
                   "git pull -r",
                   "docker compose pull",
                   "'"$command"'",
