@@ -47,6 +47,9 @@ services:
       #HIP-OMOD Variables. Refer here https://github.com/BahmniIndiaDistro/openmrs-module-hip/tree/master#docker-setup
       PHONE_NUMBER: ${PHONE_NUMBER:?}
       OMRS_DOCKER_ENV: ${OPENMRS_DOCKER_ENV}
+      #The following two variables to be set for openelis
+      PATIENT_DOCUMENTS_PATH: /usr/local/apache2/htdocs/uploaded_results/
+      LAB_ORDER_TYPE_ID: 4
     # ports:
       # - ${OMRS_DEV_DEBUG_PORT}:${OMRS_DEV_DEBUG_PORT}
     volumes:
@@ -55,6 +58,7 @@ services:
       - 'configuration_checksums:/openmrs/data/configuration_checksums'
       # - 'bahmni-patient-images:/home/bahmni/patient_images'
       # - 'bahmni-document-images:/home/bahmni/document_images'
+      - 'bahmni-lab-results:/usr/local/apache2/htdocs/uploaded_results'
     depends_on:
       - openmrsdb
 
