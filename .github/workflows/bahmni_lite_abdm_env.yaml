@@ -55,7 +55,7 @@ jobs:
             --comment "Update running containers" \
             --parameters '{
                 "commands": [
-                  ". /home/ubuntu/.bash_profile"
+                  ". /home/ubuntu/.bash_profile",
                   "git pull -r",
                   "docker compose pull",
                   "'"$command"'",
