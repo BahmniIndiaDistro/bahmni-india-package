@@ -277,6 +277,12 @@ services:
     image: bahmniindiadistro/abha-verification:${ABHA_VERIFICATION_IMAGE_TAG:?}
     profiles: ["abdm"]
 
+  sms-service:
+    image: bahmni/sms-service:${SMS_SERVICE_IMAGE_TAG:?}
+    profiles: [ "emr"]
+    environment:
+      SMS_TOKEN: ${SMS_TOKEN:?}
+
   crater-atomfeed:
     image: bahmni/crater-atomfeed:latest
     profiles: ["crater"]
