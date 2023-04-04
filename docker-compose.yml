@@ -102,7 +102,7 @@ services:
         - "5672:5672"
   otp:
       image: bahmniindiadistro/otp-service:${OTP_SERVICE_IMAGE_TAG:?}
-      profiles: ["abdm"]
+      profiles: ["abdm", "sms"]
       container_name: otp
       depends_on:
         - db
@@ -276,12 +276,6 @@ services:
   abha-verification:
     image: bahmniindiadistro/abha-verification:${ABHA_VERIFICATION_IMAGE_TAG:?}
     profiles: ["abdm"]
-
-  sms-service:
-    image: bahmni/sms-service:${SMS_SERVICE_IMAGE_TAG:?}
-    profiles: [ "emr"]
-    environment:
-      SMS_TOKEN: ${SMS_TOKEN:?}
 
   crater-atomfeed:
     image: bahmni/crater-atomfeed:latest
