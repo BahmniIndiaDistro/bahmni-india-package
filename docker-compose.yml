@@ -102,7 +102,7 @@ services:
         - "5672:5672"
   otp:
       image: bahmniindiadistro/otp-service:${OTP_SERVICE_IMAGE_TAG:?}
-      profiles: ["abdm"]
+      profiles: ["abdm", "sms"]
       container_name: otp
       depends_on:
         - db
