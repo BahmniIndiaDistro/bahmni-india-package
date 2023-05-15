@@ -353,6 +353,108 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?}
     ports:
       - '33006:3306'
+
+  avni:
+    image: mohantk/avni
+    profiles: ["avni"]
+    environment:
+      OPENCHS_DATABASE_HOST: localhost
+      OPENCHS_DATABASE_USER: openchs
+      OPENCHS_DATABASE_PASSWORD: password
+      OPENCHS_DATABASE_URL: "jdbc:postgresql://avni_db:5432/openchs?currentSchema=public"
+      OPENCHS_KEYCLOAK_CLIENT_SECRET: BlSV8ttup41KZWIA1GEWjBvFeQjTw9YX
+      OPENCHS_KEYCLOAK_SERVER: https://gok.gdobahmni.click/keycloak
+      OPENCHS_KEYCLOAK_ENABLED: true
+      AVNI_IDP_TYPE: keycloak
+      OPENCHS_MINIO_ENABLED: true
+      OPENCHS_MINIO_URL: http://minio:9000
+      OPENCHS_MINIO_ACCESS_KEY: 7ZWMNH8yTv1UxT0L
+      OPENCHS_MINIO_SECRET_ACCESS_KEY: gtA8jIJblIl9BXokFtWHYPQ0WgonIo7R
+      OPENCHS_BUCKET_NAME: avni
+  avni_db:
+    image: postgres
+    restart: always
+    profiles: ["avni"]
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+     - "5432:5432"
+    volumes:
+      - 'avni-db-data:/var/lib/postgresql/data'
+
+  avni_integration:
+    image: mohantk/avni-integration
+    profiles: ["avni"]
+    environment:
+      AVNI_INT_DATASOURCE: jdbc:postgresql://avni_integration_db:5432/avni_int
+      AVNI_INT_DB_USER: avni_int
+      AVNI_INT_DB_PASSWORD: password
+      AVNI_INT_SERVER_PORT: 6013
+      BAHMNI_AVNI_API_URL: https://avni.gdobahmni.click:443
+      BAHMNI_AVNI_API_USER: admin@int
+      BAHMNI_AVNI_API_PASSWORD: Admin@123
+      OPENMRS_BASE_URL: http://openmrs:8080
+      OPENMRS_USER: superman
+      OPENMRS_PASSWORD: Admin@123
+      BAHMNI_SCHEDULE_CRON: "*/30 * * * * *"
+      BAHMNI_SCHEDULE_CRON_FULL_ERROR: "*/30 * * * * *"
+      BAHMNI_AVNI_AUTHENTICATION_ENABLED: false
+  avni_integration_db:
+    image: postgres
+    restart: always
+    profiles: ["avni"]
+    environment:
+      POSTGRES_DB: avni_int
+      POSTGRES_USER: avni_int
+      POSTGRES_PASSWORD: password
+    ports:
+     - "5433:5432"
+    volumes:
+      - 'avni-int-db-data:/var/lib/postgresql/data'
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:20.0.2
+    profiles: ["keycloak"]
+    command: "start"
+    environment:
+      KEYCLOAK_ADMIN: keycloakadmin
+      KEYCLOAK_ADMIN_PASSWORD: keycloak@dmin
+      KC_DB: "postgres"
+      KC_DB_PASSWORD: "password"
+      KC_DB_URL: "jdbc:postgresql://keycloak_db/keycloak"
+      KC_DB_USERNAME: "keycloak"
+      KC_PROXY: "edge"
+      KC_HOSTNAME: "gok.gdobahmni.click"
+      KC_HTTP_RELATIVE_PATH: "/keycloak"
+      KC_HTTPS_CERTIFICATE_FILE: "/etc/certs/cert.pem"
+      KC_HTTPS_CERTIFICATE_KEY_FILE: "/etc/certs/key.pem"
+    volumes:
+      - "/home/centos/acme:/etc/certs"
+
+  keycloak_db:
+    image: postgres
+    profiles: ["keycloak"]
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - 'keycloak-db-data:/var/lib/postgresql/data'
+  minio:
+    image: quay.io/minio/minio:RELEASE.2023-04-28T18-11-17Z
+    profiles: ["minio"]
+    command: server /data --console-address ":9090"
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: root@123
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+
 volumes:
   openmrs-data:
   openmrsdbdata:
@@ -364,3 +466,7 @@ volumes:
   configuration_checksums:
   craterdb:
   crater-app-data:
+  avni-db-data:
+  avni-int-db-data:
+  keycloak-db-data:
+  minio-data:
