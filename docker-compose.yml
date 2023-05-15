@@ -3,7 +3,7 @@ services:
   proxy:
     image: bahmniindiadistro/proxy:${PROXY_IMAGE_TAG:?}
     volumes:
-    #   - ${CERTIFICATE_PATH}:/etc/tls
+    - ${CERTIFICATE_PATH}:/etc/tls
     - "bahmni-patient-images:/home/bahmni/patient_images"
 
     ports:
@@ -379,8 +379,6 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-    ports:
-     - "5432:5432"
     volumes:
       - 'avni-db-data:/var/lib/postgresql/data'
 
@@ -409,8 +407,6 @@ services:
       POSTGRES_DB: avni_int
       POSTGRES_USER: avni_int
       POSTGRES_PASSWORD: password
-    ports:
-     - "5433:5432"
     volumes:
       - 'avni-int-db-data:/var/lib/postgresql/data'
 
