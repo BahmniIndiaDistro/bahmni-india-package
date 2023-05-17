@@ -395,10 +395,10 @@ services:
       BAHMNI_AVNI_API_PASSWORD: Admin@123
       OPENMRS_BASE_URL: http://openmrs:8080
       OPENMRS_USER: superman
-      OPENMRS_PASSWORD: Admin@123
+      OPENMRS_PASSWORD: Admin123
       BAHMNI_SCHEDULE_CRON: "*/30 * * * * *"
       BAHMNI_SCHEDULE_CRON_FULL_ERROR: "*/30 * * * * *"
-      BAHMNI_AVNI_AUTHENTICATION_ENABLED: false
+      BAHMNI_AVNI_IDP_TYPE: Keycloak
   avni_integration_db:
     image: postgres
     restart: always
