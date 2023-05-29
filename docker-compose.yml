@@ -355,7 +355,7 @@ services:
       - '33006:3306'
 
   avni:
-    image: mohantk/avni
+    image: bahmnihwc/avni-server
     profiles: ["avni"]
     environment:
       OPENCHS_DATABASE_HOST: localhost
@@ -371,6 +371,9 @@ services:
       OPENCHS_MINIO_ACCESS_KEY: 7ZWMNH8yTv1UxT0L
       OPENCHS_MINIO_SECRET_ACCESS_KEY: gtA8jIJblIl9BXokFtWHYPQ0WgonIo7R
       OPENCHS_BUCKET_NAME: avni
+      SHOW_SQL: true
+      LOGGING_LEVEL_ROOT: DEBUG
+      NODE_SERVER_URL: "http://rules-server:3000"
   avni_db:
     image: postgres
     restart: always
@@ -399,6 +402,7 @@ services:
       BAHMNI_SCHEDULE_CRON: "*/30 * * * * *"
       BAHMNI_SCHEDULE_CRON_FULL_ERROR: "*/30 * * * * *"
       BAHMNI_AVNI_IDP_TYPE: Keycloak
+      BAHMNI_INT_APP_TASKS: AvniSubject,AvniGeneralEncounter,BahmniPatient,BahmniEncounter,BahmniErrorRecords,AvniErrorRecords
   avni_integration_db:
     image: postgres
     restart: always
@@ -410,6 +414,8 @@ services:
     volumes:
       - 'avni-int-db-data:/var/lib/postgresql/data'
 
+  rules-server:
+    image: mohantk/rules-server
   keycloak:
     image: quay.io/keycloak/keycloak:20.0.2
     profiles: ["keycloak"]
