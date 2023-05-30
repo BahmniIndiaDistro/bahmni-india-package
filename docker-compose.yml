@@ -358,7 +358,6 @@ services:
     image: bahmnihwc/avni-server
     profiles: ["avni"]
     environment:
-      OPENCHS_DATABASE_HOST: localhost
       OPENCHS_DATABASE_USER: openchs
       OPENCHS_DATABASE_PASSWORD: password
       OPENCHS_DATABASE_URL: "jdbc:postgresql://avni_db:5432/openchs?currentSchema=public"
@@ -371,9 +370,16 @@ services:
       OPENCHS_MINIO_ACCESS_KEY: 7ZWMNH8yTv1UxT0L
       OPENCHS_MINIO_SECRET_ACCESS_KEY: gtA8jIJblIl9BXokFtWHYPQ0WgonIo7R
       OPENCHS_BUCKET_NAME: avni
-      SHOW_SQL: true
-      LOGGING_LEVEL_ROOT: DEBUG
+      #SHOW_SQL: true
+      #LOGGING_LEVEL_ROOT: DEBUG
       NODE_SERVER_URL: "http://rules-server:3000"
+    ports:
+      - "8021:8021"
+
+  rules-server:
+    image: bahmnihwc/avni-rules-server
+    profiles: ["avni"]
+
   avni_db:
     image: postgres
     restart: always
@@ -384,10 +390,11 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - 'avni-db-data:/var/lib/postgresql/data'
+      - './init-avni-db.sh:/docker-entrypoint-initdb.d/init-avni-db.sh'
 
   avni_integration:
     image: mohantk/avni-integration
-    profiles: ["avni"]
+    profiles: ["avni-int"]
     environment:
       AVNI_INT_DATASOURCE: jdbc:postgresql://avni_integration_db:5432/avni_int
       AVNI_INT_DB_USER: avni_int
@@ -403,10 +410,11 @@ services:
       BAHMNI_SCHEDULE_CRON_FULL_ERROR: "*/30 * * * * *"
       BAHMNI_AVNI_IDP_TYPE: Keycloak
       BAHMNI_INT_APP_TASKS: AvniSubject,AvniGeneralEncounter,BahmniPatient,BahmniEncounter,BahmniErrorRecords,AvniErrorRecords
+  
   avni_integration_db:
     image: postgres
     restart: always
-    profiles: ["avni"]
+    profiles: ["avni-int"]
     environment:
       POSTGRES_DB: avni_int
       POSTGRES_USER: avni_int
@@ -414,8 +422,6 @@ services:
     volumes:
       - 'avni-int-db-data:/var/lib/postgresql/data'
 
-  rules-server:
-    image: mohantk/rules-server
   keycloak:
     image: quay.io/keycloak/keycloak:20.0.2
     profiles: ["keycloak"]
@@ -428,12 +434,14 @@ services:
       KC_DB_URL: "jdbc:postgresql://keycloak_db/keycloak"
       KC_DB_USERNAME: "keycloak"
       KC_PROXY: "edge"
-      KC_HOSTNAME: "gok.gdobahmni.click"
+      KC_HOSTNAME_URL: "http://localhost:8080/keycloak"
       KC_HTTP_RELATIVE_PATH: "/keycloak"
       KC_HTTPS_CERTIFICATE_FILE: "/etc/certs/cert.pem"
       KC_HTTPS_CERTIFICATE_KEY_FILE: "/etc/certs/key.pem"
     volumes:
-      - "/home/centos/acme:/etc/certs"
+      - "${CERTIFICATE_PATH}:/etc/certs"
+    ports:
+      - "8080:8080"
 
   keycloak_db:
     image: postgres
@@ -472,3 +480,4 @@ volumes:
   avni-int-db-data:
   keycloak-db-data:
   minio-data:
+  ssl-certs:
