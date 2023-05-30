@@ -361,8 +361,8 @@ services:
       OPENCHS_DATABASE_USER: openchs
       OPENCHS_DATABASE_PASSWORD: password
       OPENCHS_DATABASE_URL: "jdbc:postgresql://avni_db:5432/openchs?currentSchema=public"
-      OPENCHS_KEYCLOAK_CLIENT_SECRET: BlSV8ttup41KZWIA1GEWjBvFeQjTw9YX
-      OPENCHS_KEYCLOAK_SERVER: https://gok.gdobahmni.click/keycloak
+      OPENCHS_KEYCLOAK_CLIENT_SECRET: kuI0hFhPoprbZedHsiFTmbhPzGpjGCZj
+      OPENCHS_KEYCLOAK_SERVER: http://${HOSTNAME}:8080/keycloak
       OPENCHS_KEYCLOAK_ENABLED: true
       AVNI_IDP_TYPE: keycloak
       OPENCHS_MINIO_ENABLED: true
@@ -388,9 +388,11 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - 'avni-db-data:/var/lib/postgresql/data'
-      - './init-avni-db.sh:/docker-entrypoint-initdb.d/init-avni-db.sh'
+      - './backup_data/init-avni-db.sh:/docker-entrypoint-initdb.d/init-avni-db.sh'
+      - './backup_data/create_org_config.sql:/etc/create_org_config.sql'
 
   avni_integration:
     image: mohantk/avni-integration
@@ -425,7 +427,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:20.0.2
     profiles: ["keycloak"]
-    command: "start"
+    command: "start-dev"
     environment:
       KEYCLOAK_ADMIN: keycloakadmin
       KEYCLOAK_ADMIN_PASSWORD: keycloak@dmin
@@ -434,10 +436,10 @@ services:
       KC_DB_URL: "jdbc:postgresql://keycloak_db/keycloak"
       KC_DB_USERNAME: "keycloak"
       KC_PROXY: "edge"
-      KC_HOSTNAME_URL: "http://localhost:8080/keycloak"
+      KC_HOSTNAME_URL: "http://${HOSTNAME}:8080/keycloak"
       KC_HTTP_RELATIVE_PATH: "/keycloak"
-      KC_HTTPS_CERTIFICATE_FILE: "/etc/certs/cert.pem"
-      KC_HTTPS_CERTIFICATE_KEY_FILE: "/etc/certs/key.pem"
+      # KC_HTTPS_CERTIFICATE_FILE: "/etc/certs/cert.pem"
+      # KC_HTTPS_CERTIFICATE_KEY_FILE: "/etc/certs/key.pem"
     volumes:
       - "${CERTIFICATE_PATH}:/etc/certs"
     ports:
@@ -452,6 +454,7 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - 'keycloak-db-data:/var/lib/postgresql/data'
+      - './backup_data/keycloak_base_backup.sql.gz:/docker-entrypoint-initdb.d/keycloak_base_backup.sql.gz'
   minio:
     image: quay.io/minio/minio:RELEASE.2023-04-28T18-11-17Z
     profiles: ["minio"]
