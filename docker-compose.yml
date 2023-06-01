@@ -358,27 +358,23 @@ services:
     image: bahmnihwc/avni-server
     profiles: ["avni"]
     environment:
-      OPENCHS_DATABASE_USER: openchs
-      OPENCHS_DATABASE_PASSWORD: password
-      OPENCHS_DATABASE_URL: "jdbc:postgresql://avni_db:5432/openchs?currentSchema=public"
-      OPENCHS_KEYCLOAK_CLIENT_SECRET: kuI0hFhPoprbZedHsiFTmbhPzGpjGCZj
-      OPENCHS_KEYCLOAK_SERVER: http://${HOSTNAME}:8080/keycloak
-      OPENCHS_KEYCLOAK_ENABLED: true
+      OPENCHS_MODE: "staging"
+      OPENCHS_DATABASE_USER: ${AVNI_DB_USERNAME}
+      OPENCHS_DATABASE_PASSWORD: ${AVNI_DB_PASSWORD}
+      OPENCHS_DATABASE_URL: "jdbc:postgresql://${AVNI_DB_HOST}:5432/${AVNI_DB_NAME}?currentSchema=public"
       AVNI_IDP_TYPE: keycloak
+      OPENCHS_KEYCLOAK_ENABLED: true
+      OPENCHS_KEYCLOAK_SERVER: http://${HOSTNAME}:8083/keycloak
+      OPENCHS_KEYCLOAK_CLIENT_SECRET: ${AVNI_KEYCLOAK_CLIENT_SECRET}
       OPENCHS_MINIO_ENABLED: true
-      OPENCHS_MINIO_URL: http://minio:9000
-      OPENCHS_MINIO_ACCESS_KEY: 7ZWMNH8yTv1UxT0L
-      OPENCHS_MINIO_SECRET_ACCESS_KEY: gtA8jIJblIl9BXokFtWHYPQ0WgonIo7R
-      OPENCHS_BUCKET_NAME: avni
-      #SHOW_SQL: true
+      OPENCHS_MINIO_URL: http://minio.avni.local:9000
+      OPENCHS_BUCKET_NAME: ${AVNI_MINIO_BUCKET_NAME}
+      OPENCHS_MINIO_ACCESS_KEY: ${AVNI_MINIO_ACCESS_KEY}
+      OPENCHS_MINIO_SECRET_ACCESS_KEY: ${AVNI_MINIO_SECRET_ACCESS_KEY}
       #LOGGING_LEVEL_ROOT: DEBUG
       NODE_SERVER_URL: "http://rules-server:3000"
     ports:
       - "8021:8021"
-
-  rules-server:
-    image: bahmnihwc/avni-rules-server
-    profiles: ["avni"]
 
   avni_db:
     image: postgres
@@ -387,12 +383,64 @@ services:
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${AVNI_DB_ROOT_PASSWORD}
+      AVNI_DB_USERNAME: ${AVNI_DB_USERNAME}
+      AVNI_DB_PASSWORD: ${AVNI_DB_PASSWORD}
+      AVNI_DB_NAME: ${AVNI_DB_NAME}
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - 'avni-db-data:/var/lib/postgresql/data'
       - './backup_data/init-avni-db.sh:/docker-entrypoint-initdb.d/init-avni-db.sh'
       - './backup_data/create_org_config.sql:/etc/create_org_config.sql'
+  
+  rules-server:
+    image: bahmnihwc/avni-rules-server
+    profiles: ["avni"]
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:20.0.2
+    profiles: ["keycloak"]
+    command: "start-dev"
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USERNAME}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: "postgres"
+      KC_DB_URL: "jdbc:postgresql://${KEYCLOAK_DB_HOST}/${KEYCLOAK_DB_NAME}"
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USERNAME}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_PROXY: "edge"
+      KC_HTTP_RELATIVE_PATH: "/keycloak"
+      KC_HOSTNAME_URL: "http://${HOSTNAME}:8083/keycloak"
+      # KC_HTTPS_CERTIFICATE_FILE: "/etc/certs/cert.pem"
+      # KC_HTTPS_CERTIFICATE_KEY_FILE: "/etc/certs/key.pem"
+    volumes:
+      - "${CERTIFICATE_PATH}:/etc/certs"
+    ports:
+      - "8083:8080"
+
+  keycloak_db:
+    image: postgres
+    profiles: ["keycloak"]
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME}
+      POSTGRES_USER: ${KEYCLOAK_DB_USERNAME}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    volumes:
+      - 'keycloak-db-data:/var/lib/postgresql/data'
+      - './backup_data/keycloak_base_backup.sql.gz:/docker-entrypoint-initdb.d/keycloak_base_backup.sql.gz'
+  
+  minio:
+    image: quay.io/minio/minio:RELEASE.2023-04-28T18-11-17Z
+    profiles: ["minio"]
+    command: server /data --console-address ":9090"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9000:9000"
+      - "9090:9090"
 
   avni_integration:
     image: mohantk/avni-integration
@@ -423,50 +471,6 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - 'avni-int-db-data:/var/lib/postgresql/data'
-
-  keycloak:
-    image: quay.io/keycloak/keycloak:20.0.2
-    profiles: ["keycloak"]
-    command: "start-dev"
-    environment:
-      KEYCLOAK_ADMIN: keycloakadmin
-      KEYCLOAK_ADMIN_PASSWORD: keycloak@dmin
-      KC_DB: "postgres"
-      KC_DB_PASSWORD: "password"
-      KC_DB_URL: "jdbc:postgresql://keycloak_db/keycloak"
-      KC_DB_USERNAME: "keycloak"
-      KC_PROXY: "edge"
-      KC_HOSTNAME_URL: "http://${HOSTNAME}:8080/keycloak"
-      KC_HTTP_RELATIVE_PATH: "/keycloak"
-      # KC_HTTPS_CERTIFICATE_FILE: "/etc/certs/cert.pem"
-      # KC_HTTPS_CERTIFICATE_KEY_FILE: "/etc/certs/key.pem"
-    volumes:
-      - "${CERTIFICATE_PATH}:/etc/certs"
-    ports:
-      - "8080:8080"
-
-  keycloak_db:
-    image: postgres
-    profiles: ["keycloak"]
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: password
-    volumes:
-      - 'keycloak-db-data:/var/lib/postgresql/data'
-      - './backup_data/keycloak_base_backup.sql.gz:/docker-entrypoint-initdb.d/keycloak_base_backup.sql.gz'
-  minio:
-    image: quay.io/minio/minio:RELEASE.2023-04-28T18-11-17Z
-    profiles: ["minio"]
-    command: server /data --console-address ":9090"
-    environment:
-      MINIO_ROOT_USER: root
-      MINIO_ROOT_PASSWORD: root@123
-    volumes:
-      - minio-data:/data
-    ports:
-      - "9000:9000"
-      - "9090:9090"
 
 volumes:
   openmrs-data:

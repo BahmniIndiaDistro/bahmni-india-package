@@ -32,7 +32,29 @@ The diagram will be generated in the root directory and if there is any existing
 4. Update the value in the .env file for the `HOSTNAME` variable.
 5. Now start Avni and keycloak by running the following command
     > docker compose --profile keycloak --profile avni up -d
-6. Wait for Avni to boot up. You can access Avni at http://localhost:8021 or http://<<machine_ip>>:8021 and keycloak at http://<<machine_ip>>:8080/keycloak.
-7. Once you see the login page of Avni, run the following command.
+6. Keycloak will be accessible at http://<<machine_ip>>:8083/keycloak. The default login credentials will be keycloakadmin/keycloak@dmin
+7. Wait for Avni to boot up. You can access Avni at http://localhost:8021 or http://<<machine_ip>>:8021 
+8. Once you see the login page of Avni, run the following command.
     > docker compose exec -it avni_db psql -U openchs -f /etc/create_org_config.sql
-8. Now you can login to Avni using Username: admin Password: Admin123
+9. Now you can login to Avni using Username: admin Password: Admin123
+
+
+## Setting Up MinIO
+Note: The following steps are required only if you want to do some file uploads within Avni
+1. Start MinIo by running the following command
+    > docker compose --profile minio up -d
+2. Add an entry in `/etc/hosts` file. Before this find the machine IP as mentioned in step 3 above.
+    
+    Open File in Editor: `sudo nano /etc/hosts`
+    
+    Add below entry to the last of file. Replace Machine_IP with local network IP address of machine.
+    
+    {Machine_IP} minio.avni.local
+3. Now from browser navigate to http://minio.avni.local:9000 and login using default credentials root/root@123
+4. Create a bucket from the MinIO console named `avni`. If you use a different file name, make sure to update AVNI_MINIO_BUCKET_NAME variable in .env file.
+5. Now create an Access Key from MinIO console. On creation copy the access key and secret acess key and replace the `AVNI_MINIO_ACCESS_KEY` and `AVNI_MINIO_SECRET_ACCESS_KEY` variables in the .env file.
+6. After updating recretate Avni containers by running
+    > docker compose --profile avni --profile minio up -d
+7. Now when an image is uploaded from a form, you should see that data in the bucket in MinIO console.
+
+    

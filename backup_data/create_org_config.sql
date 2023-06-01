@@ -1,1 +1,1 @@
-INSERT INTO organisation_config(uuid,organisation_id,settings,audit_id,created_by_id,last_modified_by_id,created_date_time,last_modified_date_time) values (gen_random_uuid(),1,'{"languages": ["en"],"useKeycloakAsIDP": true}',create_audit(),1,1,now(),now());
+INSERT INTO organisation_config(uuid,organisation_id,settings,audit_id,created_by_id,last_modified_by_id,created_date_time,last_modified_date_time) values (gen_random_uuid(),1,'{"languages": ["en"],"useKeycloakAsIDP": true,"useMinioForStorage": "true"}',create_audit(),1,1,now(),now());
