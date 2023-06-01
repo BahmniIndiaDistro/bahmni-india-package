@@ -3,7 +3,7 @@ set -e
 
 sed '/module.allow_web_admin/a\
 c3p0.min_size=0\
-c3p0.max_size=150\
+c3p0.max_size=30\
 c3p0.max_statements=0\
 c3p0.maxStatementsPerConnection=0\
 c3p0.maxIdleTime=5\
