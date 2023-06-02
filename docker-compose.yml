@@ -16,7 +16,7 @@ services:
 
   openmrs:
     profiles: ['emr']
-    image: bahmniindiadistro/openmrs:${OPENMRS_IMAGE_TAG}
+    image: bahmnihwc/openmrs:${OPENMRS_IMAGE_TAG}
     environment:
       OMRS_DB_NAME: ${OPENMRS_DB_NAME:?}
       OMRS_DB_HOSTNAME: ${OPENMRS_DB_HOST:?}
