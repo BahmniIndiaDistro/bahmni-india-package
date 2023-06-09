@@ -41,6 +41,11 @@ The diagram will be generated in the root directory and if there is any existing
 
 8. Also from the database backup, a default organisation named `Bahmni` will also be created with some metadata. The login credentials for the same is admin@bahmni/Admin123. This can also be used to login from mobile app.
 
+## Troubleshooting
+1. If you are connecting to a DHCP server or switch networks, then the local IP address may change. In such case, restart  keycloak and avni service
+   * `docker compose restart keycloak`
+   * `docker compose restart avni` 
+
 ## Setting Up MinIO
 Note: The following steps are required only if you want to do some file uploads within Avni
 1. Start MinIo by running the following command
@@ -84,8 +89,14 @@ Both Avni Server and Avni Integration server has got DEBUG_OPTS variable which o
 3. Once the build is successful you will see JAR file in integrator/build/libs/ folder of the repo.
 4. Now find the container id of the avni-integration service by runnning `docker ps` and copy the ID.
 5. Now from the integration-service directory, run the following command to copy that JAR into docker container.
-     `docker cp <container_id>:/opt/integrator/integrator.jar integrator/build/libs/integrator-0.0.2-SNAPSHOT.jar`
-6. Once copied restart container by running `docker compose restart avni-integration` from bahmni-india-package directory.
+
+     `docker cp integrator/build/libs/integrator-0.0.2-SNAPSHOT.jar <container_id>:/opt/integrator/integrator.jar`
+ 
+6. Check above copied file with right permission in the container, before restarting the container
+   * `docker compose exec -it avni_integration sh`
+   * `ls -al /opt/integrator/integrator.jar`
+   * `chown root:root /opt/integrator/integrator.jar` (if permissions are not for root:root for the copied jar)
+7. Once copied restart container by running `docker compose restart avni_integration` from bahmni-india-package directory.
 
 ### Building Avni Service
 1. Install Java 8
