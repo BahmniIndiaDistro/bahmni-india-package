@@ -47,6 +47,7 @@ services:
       #HIP-OMOD Variables. Refer here https://github.com/BahmniIndiaDistro/openmrs-module-hip/tree/master#docker-setup
       PHONE_NUMBER: ${PHONE_NUMBER:?}
       OMRS_DOCKER_ENV: ${OPENMRS_DOCKER_ENV}
+      OMRS_C3P0_MAX_SIZE: ${OMRS_C3P0_MAX_SIZE}
     # ports:
       # - ${OMRS_DEV_DEBUG_PORT}:${OMRS_DEV_DEBUG_PORT}
     volumes:
