@@ -54,8 +54,10 @@ services:
       # - 'openmrs-data:/openmrs/data/modules'
       - '${CONFIG_VOLUME:?}:/etc/bahmni_config/:ro'
       - 'configuration_checksums:/openmrs/data/configuration_checksums'
-      # - 'bahmni-patient-images:/home/bahmni/patient_images'
-      # - 'bahmni-document-images:/home/bahmni/document_images'
+      - 'bahmni-patient-images:/home/bahmni/patient_images'
+      - 'bahmni-document-images:/home/bahmni/document_images'
+      - "bahmni-lab-results:/home/bahmni/uploaded_results"
+      - 'bahmni-clinical-forms:/home/bahmni/clinical_forms'
     depends_on:
       - openmrsdb
 
@@ -257,6 +259,7 @@ services:
      profiles: ["emr"]
      volumes:
        - 'bahmni-document-images:/usr/share/nginx/html/document_images'
+       - 'bahmni-lab-results:/usr/share/nginx/html/uploaded_results'
      environment:
        - OPENMRS_HOST=${OPENMRS_HOST:?}
 
@@ -365,3 +368,5 @@ volumes:
   configuration_checksums:
   craterdb:
   crater-app-data:
+  bahmni-clinical-forms:
+  bahmni-lab-results:
