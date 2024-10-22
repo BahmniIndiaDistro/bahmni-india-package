@@ -303,8 +303,8 @@ services:
     image: bahmniindiadistro/abha-verification:${ABHA_VERIFICATION_IMAGE_TAG:?}
     profiles: ["abdm"]
     restart: ${RESTART_POLICY}
-    volumes:
-      - "${ABHA_VERIFICATION_PATH}/build:/usr/local/apache2/htdocs/abha-verification"
+    # volumes:
+      # - "${ABHA_VERIFICATION_PATH}/build:/usr/local/apache2/htdocs/abha-verification"
 
   crater-atomfeed:
     image: bahmni/crater-atomfeed:latest
