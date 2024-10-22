@@ -147,6 +147,7 @@ services:
       Gateway:clientSecret: ${ABDM_GATEWAY_CLIENT_SECRET:?}
       Gateway:clientId: ${ABDM_GATEWAY_CLIENT_ID:?}
       Gateway:url: ${ABDM_GATEWAY_URL:?}
+      Gateway:abhaNumberServiceUrl: ${ABDM_ABHA_SERVICE_URL:?}
       OpenMrs:url: ${OPENMRS_URL:?}
       OpenMrs:password: ${OPENMRS_PASSWORD:?}
       OpenMrs:phoneNumber: ${PHONE_NUMBER:?}
@@ -302,6 +303,8 @@ services:
     image: bahmniindiadistro/abha-verification:${ABHA_VERIFICATION_IMAGE_TAG:?}
     profiles: ["abdm"]
     restart: ${RESTART_POLICY}
+    volumes:
+      - "${ABHA_VERIFICATION_PATH}/build:/usr/local/apache2/htdocs/abha-verification"
 
   crater-atomfeed:
     image: bahmni/crater-atomfeed:latest
