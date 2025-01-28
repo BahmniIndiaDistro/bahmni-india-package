@@ -146,8 +146,9 @@ services:
     environment:
       Gateway:clientSecret: ${ABDM_GATEWAY_CLIENT_SECRET:?}
       Gateway:clientId: ${ABDM_GATEWAY_CLIENT_ID:?}
-      Gateway:url: ${ABDM_GATEWAY_URL:?}
+      Gateway:url: ${ABDM_GATEWAY_BASE_URL:?}
       Gateway:abhaNumberServiceUrl: ${ABDM_ABHA_SERVICE_URL:?}
+      Gateway:abhaAddressServiceUrl: ${ABHA_ADDRESS_BASE_URL:?}
       OpenMrs:url: ${OPENMRS_URL:?}
       OpenMrs:password: ${OPENMRS_PASSWORD:?}
       OpenMrs:phoneNumber: ${PHONE_NUMBER:?}
@@ -172,9 +173,7 @@ services:
       HIU_NAME: ${HIU_NAME:?}
       IDENTITY_JWK_URL: ${ABDM_IDENTITY_JWK_URL:?}
       DATA_PUSH_URL: ${HIU_DATA_PUSH_URL:?}
-      CONSENT_NOTIFICATION_URL: ${ABDM_CONSENT_NOTIFICATION_URL:?}
       CONSENT_MANAGEMENT_SUFFIX:  ${HIU_ABDM_CONSENT_MANAGEMENT_SUFFIX:?}
-      CONSENT_MANAGEMENT_URL: ${ABDM_CONSENT_MANAGEMENT_URL:?}
       DEFAULT_PAGE_SIZE: ${HIU_DEFAULT_PAGE_SIZE:?}
       MAX_PAGE_SIZE: ${HIU_MAX_PAGE_SIZE:?}
       LOCAL_STORAGE_PATH: ${HIU_LOCAL_STORAGE_PATH}
